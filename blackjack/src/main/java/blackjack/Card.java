@@ -27,6 +27,20 @@ public class Card {
 		return suit;
 	}
 	
+	// Return value
+	public int getValue() {
+		if (rank.equals("A")) {
+			return 11;
+		} else if ("JQK".contains(rank)) {
+			return 10;
+		}
+		return Integer.parseInt(rank);
+	}
+	
+	public boolean isAce() {
+		return rank.equals("A");
+	}
+	
 	@Override
 	public String toString() {
 		return rank + " of " + suit;
