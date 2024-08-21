@@ -13,7 +13,8 @@ public class Gamestate {
     
     // Instance variables
     private boolean gameOver;
-    private String result;
+    private double payout;
+	private String resultText;
     
     // Constructor, initialise gameOver to false
     public Gamestate() {
@@ -21,9 +22,10 @@ public class Gamestate {
     }
     
     // Set the state of the game to over and record the result
-    public void setGameState(String result) {
+    public void setGameState(double payout, String resultText) {
         this.gameOver = true;
-        this.result = result;
+        this.payout = payout;
+		this.resultText = resultText;
     }
     
     // Check if the game is over
@@ -31,21 +33,40 @@ public class Gamestate {
         return gameOver;
     }
     
+	// Checks for and handles cases where player has natural
+	public void natural(Player player, Dealer dealer) {
+		// Check if player has natural
+		if (player.getSum() == 21) { // Player has natural
+			if (dealer.getSum() == 21) { // Dealer also has natural
+				setGameState(1.0, "Both " + player.getName() + " and " + dealer.getName() + " have naturals, it's a tie!");
+			} else {
+				setGameState(2.5, player.getName() + " has a natural win!");
+			}		
+		} else if (dealer.getSum() == 21) {
+			setGameState(0.0, dealer.getName() + " has a natural win!");
+		}
+	}
+	
     // Determines winner base on player's and dealer's cards on hand
     public void winner(Player player, Dealer dealer) {
         if(dealer.isBust()) {
-            setGameState("Dealer busts!"+ player.getName());
+            setGameState(2.0, dealer.getName() + " busts! " + player.getName() + " wins!");
         } else if( player.getSum() > dealer.getSum()) {
-            setGameState(player.getName() +" win");
+            setGameState(2.0, player.getName() + " wins!");
         } else if(player.getSum() < dealer.getSum()) {
-            setGameState(player.getName() +" lose");
+            setGameState(0.0, player.getName() + " loses!");
         } else{
-            setGameState("tie");
+            setGameState(1.0, "Both " + player.getName() + " and " + dealer.getName() + " have " + player.getSum() + ", it's a tie!");
         }
     }
     
-    // Result of the game
-    public String getResult() {
-        return result;
+    // Resulting payout
+    public double getPayout() {
+        return payout;
     }
+	
+	// Result text
+	public String getResultText() {
+		return resultText;
+	}
 }

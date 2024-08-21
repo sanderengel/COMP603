@@ -14,10 +14,21 @@ public class Blackjack {
 	private Dealer dealer;
 	private Player player;
 	private Gamestate gameState;
-	// private InputHandler inputHandler;
+	private InputHandler inputHandler;
 	private OutputHandler outputHandler;
+	private int bet;
 	
-	public void BlackJackGame() {
+	public void Blackjack() {
+		
+		// Initialize components
+		inputHandler = new InputHandler();
+		outputHandler = new OutputHandler();
+		gameState = new Gamestate();
+		
+		// Initialize dealer and player
+		dealer = new Dealer("Dealer");
+		player = new Player("Player");
+		
 		// Load deck
 		try {
 			// Load resource file
@@ -43,6 +54,29 @@ public class Blackjack {
 		}
 	}
 	
+	public void playGame() {
+		
+		// Deal first cards
+		player.addCard(deck.dealCard());
+		dealer.addCard(deck.dealCard()); // Dealer's first card is visible
+		
+		// Deal second cards
+		player.addCard(deck.dealCard());
+		dealer.sethiddenCard(deck.dealCard()); // Dealer's second card is hidden
+		
+		// Check for naturals
+		gameState.natural(player, dealer);
+		
+		// The play
+		if (!gameState.isGameOver()) {
+			while (!player.isBust()) {
+				String action = inputHandler.getAction();
+				// CONTINUE
+			}
+		}
+			
+	}
+}
 	
 
 
@@ -53,7 +87,7 @@ public class Blackjack {
 //		player = new Player("Player");
 //	}
 	
-	public static void main(String[] args) {
-		BlackJackGame();
-	}
-}
+//	public static void main(String[] args) {
+//		BlackJackGame();
+//	}
+//}
