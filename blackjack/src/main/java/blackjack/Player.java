@@ -22,7 +22,7 @@ public class Player {
     }
     
     public int getSum() {
-        return hand.getSum();
+        return 21; //hand.getSum();
     }
     
     public boolean isBust() {
@@ -37,6 +37,7 @@ public class Player {
         return hand;
     }
     
+	@Override
     public String toString() {
         return name + "'s hand: " + hand;
     }

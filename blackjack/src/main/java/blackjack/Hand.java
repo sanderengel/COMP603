@@ -7,7 +7,7 @@ public class Hand {
     // Instance variables
     private int sum;
     private int aceCount;
-    private ArrayList<Card> cards;
+    private final ArrayList<Card> cards;
 
     // Constructor
     public Hand() {

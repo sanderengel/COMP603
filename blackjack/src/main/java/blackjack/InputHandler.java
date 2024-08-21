@@ -15,7 +15,7 @@ public class InputHandler {
 	}
 	
 	public String getAction() {
-		System.out.println("Do you wish to HIT (H) or STAY (S)? ");
+		System.out.println("Do you wish to HIT (H) or STAND (S)? ");
 		String action = scanner.nextLine();
 		return action.toUpperCase();
 	}

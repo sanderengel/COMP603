@@ -15,21 +15,25 @@ public class Dealer extends Player {
         super(name);
     }
     
-    public void sethiddenCard(Card card) {
+    public void setHiddenCard(Card card) {
         hiddenCard = card;
         addCard(card);
     }
+	
+	public Card getHiddenCard() {
+		return hiddenCard;
+	}
     
-    public void makeMove(Deck deck, OutputHandler outputHandler) {
-        while (getSum() < 17) {
-            Card newCard = deck.dealCard();
-            addCard(newCard);
-        }
-        outputHandler.revealHiddenCard(hiddenCard);
-    }
+//    public void makeMove(Deck deck, OutputHandler outputHandler) {
+//        while (getSum() < 17) {
+//            Card newCard = deck.dealCard();
+//            addCard(newCard);
+//        }
+//        outputHandler.revealHiddenCard(hiddenCard);
+//    }
     
-    @Override
-    public String toString() {
-        return "Dealer's hand: "+ getHand();
-}
+//    @Override
+//    public String toString() {
+//        return "Dealer's hand: "+ getHand();
+//	}
 }
