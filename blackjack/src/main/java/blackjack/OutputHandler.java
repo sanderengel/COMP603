@@ -6,8 +6,17 @@ package blackjack;
 
 /**
  *
- * @author jasseldoong
+ * @author Jassel Doong
+ * @author Sander Thilo
  */
 public class OutputHandler {
+    public void displayPlayerHand(Player player) {
+        
+    }
+    
+    public void displayInitialHands(Player player, Dealer dealer) {
+        displayPlayerHand(player);
+        displayDealerVisibleCard(dealer);
+    }
     
 }
