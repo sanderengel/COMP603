@@ -1,4 +1,6 @@
-imnport java.util.ArrayList;
+package blackjack;
+
+import java.util.ArrayList;
 
 public class Hand {
     private int sum;
@@ -12,7 +14,7 @@ public class Hand {
     }
 
     public void addCard(Card card) {
-        this.card.add(card);
+        this.cards.add(card);
         this.sum += card.getValue();
 
         if(card.isAce) {
@@ -28,13 +30,17 @@ public class Hand {
             this.aceCount--;
         }
     }
+    
+    public int getSum() {
+        return sum;
+    }
 
-    public boolean Bust() {
+    public boolean isBust() {
         return this.sum > 21;
     }
 
-    public ArrayList<card> getCards() {
-        return new ArrayList<>(this.card);
+    public ArrayList<Card> getCards() {
+        return new ArrayList<>(this.cards);
     }
 
     @Override
