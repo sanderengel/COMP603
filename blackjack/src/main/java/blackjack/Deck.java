@@ -14,4 +14,6 @@ public class Deck {
 	public Deck(String filename) throws IOException {
 		loadDeckFromFile(filename);
 	}
+	
+	public void loadDeckFromFile
 }
