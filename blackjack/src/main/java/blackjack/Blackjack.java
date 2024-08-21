@@ -1,54 +1,59 @@
-public class BlackJackGame {
-    private Deck deck;
-    private Dealer dealer;
-    private Player player;
-    private GameState gameState;
-    private InputHandler inputHandler;
-    private OutputHandler outputHandler;
+// NOT DONE AT ALLLLLL
 
-    public BlackJackGame() {
-        deck = new Deck();
-        dealer = new Dealer("Dealer");
-        player = new Player("Player");
-        gameState = new GameState();
-        inputHandler = new InputHandler();
-        outputHandler = new OutputHandler();
+package blackjack;
 
-        startGame();
-    }
+import java.io.IOException;
+import java.io.InputStream;
 
-    private void startGame() {
-        deck.shuffle();
+/**
+ *
+ * @author sanderengelthilo
+ */
+public class Blackjack {
+	private Deck deck;
+	private Dealer dealer;
+	private Player player;
+	private Gamestate gameState;
+	// private InputHandler inputHandler;
+	private OutputHandler outputHandler;
+	
+	public void BlackJackGame() {
+		// Load deck
+		try {
+			// Load resource file
+			InputStream inputStream = Blackjack.class.getResourceAsStream("/cards.txt");
 
-        // Initial dealing
-        dealer.addCard(deck.dealCard());
-        dealer.addHiddenCard(deck.dealCard());
+			if (inputStream == null) {
+				throw new IOException("Resource file not found");
+			}
 
-        player.addCard(deck.dealCard());
-        player.addCard(deck.dealCard());
+			// Initialize new deck with input stream
+			deck = new Deck(inputStream);
 
-        outputHandler.displayInitialHands(player, dealer);
+			// Shuffle deck
+			deck.shuffle();
 
-        while (!gameState.isGameOver()) {
-            String action = inputHandler.getPlayerAction();
-            if ("H".equalsIgnoreCase(action)) {
-                player.addCard(deck.dealCard());
-                outputHandler.displayPlayerHand(player);
-                if (player.isBust()) {
-                    gameState.setGameOver("Player busts! Dealer wins.");
-                    break;
-                }
-            } else if ("S".equalsIgnoreCase(action)) {
-                dealer.play(deck, outputHandler);
-                gameState.determineWinner(player, dealer);
-                break;
-            }
-        }
+			// Print cards in deck for testing
+			for (Card card : deck.getCards()) {
+				System.out.println(card);
+			}
 
-        outputHandler.displayGameResult(gameState);
-    }
+		} catch (IOException e) {
+			System.out.println("Error loading deck: " + e.getMessage());
+		}
+	}
+	
+	
 
-    public static void main(String[] args) {
-        new BlackJackGame();
-    }
+
+
+//	// Initialize other classes
+//	public BlackJackGame() {
+//		dealer = new Dealer("Dealer");
+//		player = new Player("Player");
+//	}
+	
+	public static void main(String[] args) {
+		BlackJackGame();
+	}
 }
