@@ -17,7 +17,7 @@ public class Hand {
         this.cards.add(card);
         this.sum += card.getValue();
 
-        if(card.isAce) {
+        if(card.isAce()) {
             this.aceCount++;
         }
 
