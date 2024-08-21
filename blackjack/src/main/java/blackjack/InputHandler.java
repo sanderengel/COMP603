@@ -5,6 +5,7 @@ import java.util.Scanner;
 /**
  *
  * @author sanderengelthilo
+ * @author Jassel Doong
  */
 public class InputHandler {
 	private Scanner scanner;

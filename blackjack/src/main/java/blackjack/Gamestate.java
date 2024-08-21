@@ -6,7 +6,8 @@ package blackjack;
 
 /**
  *
- * @author jasseldoong
+ * @author Jassel Doong
+ * @author Sander Thilo
  */
 public class Gamestate {
     
@@ -14,19 +15,23 @@ public class Gamestate {
     private boolean gameOver;
     private String result;
     
+    // Constructor, initialise gameOver to false
     public Gamestate() {
         gameOver = false;
     }
     
+    // Set the state of the game to over and record the result
     public void setGameState(String result) {
         this.gameOver = true;
         this.result = result;
     }
     
+    // Check if the game is over
     public boolean isGameOver() {
         return gameOver;
     }
     
+    // Determines winner base on player's and dealer's cards on hand
     public void winner(Player player, Dealer dealer) {
         if(dealer.isBust()) {
             setGameState("Dealer busts!"+ player.getName());
@@ -39,6 +44,7 @@ public class Gamestate {
         }
     }
     
+    // Result of the game
     public String getResult() {
         return result;
     }

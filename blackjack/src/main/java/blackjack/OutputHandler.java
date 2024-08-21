@@ -27,4 +27,8 @@ public class OutputHandler {
         System.out.println("Dealer's hidden card: "+ hiddenCard);
     }
     
+    public void displayResult (Gamestate gameState) {
+        System.out.println(gameState.getResult());
+    }
+    
 }
