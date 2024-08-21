@@ -11,12 +11,20 @@ package blackjack;
  */
 public class OutputHandler {
     public void displayPlayerHand(Player player) {
-        
+        System.out.println(player);
+    }
+    
+    public void displayDealerVisibleCard(Dealer dealer) {
+        System.out.println("Dealer's visible  card: " + dealer.getHand().getCards().get(0));
     }
     
     public void displayInitialHands(Player player, Dealer dealer) {
         displayPlayerHand(player);
         displayDealerVisibleCard(dealer);
+    }
+    
+    public void revealHiddenCard(Card hiddenCard) {
+        System.out.println("Dealer's hidden card: "+ hiddenCard);
     }
     
 }
