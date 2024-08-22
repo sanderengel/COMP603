@@ -22,7 +22,7 @@ public class Player {
     }
     
     public int getSum() {
-        return 21; //hand.getSum();
+        return hand.getSum(); //hand.getSum();
     }
     
     public boolean isBust() {

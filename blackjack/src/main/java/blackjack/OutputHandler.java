@@ -50,7 +50,7 @@ public class OutputHandler {
 		displaySum(dealer);
 	}
     
-    public void displayResult (Gamestate gameState) {
-        System.out.println(gameState.getResultText());
+    public void displayResult(Gamestate gamestate) {
+        System.out.println(gamestate.getResultText());
     }
 }

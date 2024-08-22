@@ -103,13 +103,13 @@ public class Blackjack {
 					dealer.addCard(deck.dealCard());
 					outputHandler.displayDealerHand(dealer);
 				}
+                                gameState.winner(player, dealer);
 			}
 			
 		}
-		
 		// Last part which is missing
 		// Return payout and result
-			
+                outputHandler.displayResult(gameState);
 	}
 	
 	// Main method to test the game
