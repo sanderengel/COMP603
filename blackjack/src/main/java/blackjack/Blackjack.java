@@ -16,9 +16,8 @@ public class Blackjack {
 	private Gamestate gameState;
 	private InputHandler inputHandler;
 	private OutputHandler outputHandler;
-	private int bet;
 	
-	public void Blackjack() {
+	public Blackjack() {
 		
 		// Initialize components
 		inputHandler = new InputHandler();
@@ -44,11 +43,6 @@ public class Blackjack {
 			// Shuffle deck
 			deck.shuffle();
 
-			// Print cards in deck for testing
-			for (Card card : deck.getCards()) {
-				System.out.println(card);
-			}
-
 		} catch (IOException e) {
 			System.out.println("Error loading deck: " + e.getMessage());
 		}
@@ -56,38 +50,71 @@ public class Blackjack {
 	
 	public void playGame() {
 		
+		System.out.println("New hand started. Dealing cards...");
+		
 		// Deal first cards
 		player.addCard(deck.dealCard());
 		dealer.addCard(deck.dealCard()); // Dealer's first card is visible
 		
 		// Deal second cards
 		player.addCard(deck.dealCard());
-		dealer.sethiddenCard(deck.dealCard()); // Dealer's second card is hidden
+		dealer.setHiddenCard(deck.dealCard()); // Dealer's second card is hidden
+		
+		// Print hands
+		outputHandler.displayInitialHands(player, dealer);
+		System.out.println("");
 		
 		// Check for naturals
-		gameState.natural(player, dealer);
+		gameState.natural(player, dealer, outputHandler);
 		
-		// The play
+		// The play, only happens if no naturals occour
 		if (!gameState.isGameOver()) {
-			while (!player.isBust()) {
+			
+			// Player's turn
+			OUTER:
+			while (player.getSum() < 21) {
 				String action = inputHandler.getAction();
-				// CONTINUE
+				switch (action) {
+					case "H":
+					case "HIT":
+						// Deal new card to player
+						player.addCard(deck.dealCard());
+						outputHandler.displayPlayerHand(player);
+						break;
+					case "S":
+					case "STAND":
+						break OUTER;
+					default:
+						System.out.println("Please input a valid answer (H or S)");
+						break;
+				}
 			}
+			
+			// Check if player has busted
+			if (player.isBust()) {
+				gameState.playerBust(player, dealer);
+			} else {
+				// Player has stood, dealer reveal hidden card
+				outputHandler.revealHiddenCard(dealer);
+				
+				// Dealer's turn
+				while (dealer.getSum() < 17) {
+					System.out.println("Dealer hits...");
+					dealer.addCard(deck.dealCard());
+					outputHandler.displayDealerHand(dealer);
+				}
+			}
+			
 		}
+		
+		// Last part which is missing
+		// Return payout and result
 			
 	}
+	
+	// Main method to test the game
+    public static void main(String[] args) {
+        Blackjack game = new Blackjack(); // Create a new Blackjack game
+        game.playGame(); // Play a single round of Blackjack
+    }
 }
-	
-
-
-
-//	// Initialize other classes
-//	public BlackJackGame() {
-//		dealer = new Dealer("Dealer");
-//		player = new Player("Player");
-//	}
-	
-//	public static void main(String[] args) {
-//		BlackJackGame();
-//	}
-//}
