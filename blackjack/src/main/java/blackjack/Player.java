@@ -7,26 +7,41 @@ package blackjack;
 /**
  *
  * @author jasseldoong
+ * @author sanderengelthilo
  */
 public class Player {
-    private String name;
+    private final String name;
     private Hand hand;
+	private double balance;
     
-    public Player(String name) {
+    public Player(String name, double startingBalance) {
         this.name = name;
-        hand = new Hand();
+        this.balance = startingBalance;
+		this.hand = new Hand(); // Initial hand setup
     }
+	
+	public void addHand() {
+		this.hand = new Hand();
+	}
     
     public void addCard(Card card) {
         hand.addCard(card);
     }
-    
-    public int getSum() {
-        return hand.getSum(); //hand.getSum();
-    }
+	
+	public void adjustBalance(double bet, double payoutMultiplier) {
+		this.balance += bet * payoutMultiplier;
+	}
+	
+	public double getBalance() {
+		return balance;
+	}
     
     public boolean isBust() {
         return hand.isBust();
+    }
+	
+	public int getSum() {
+        return hand.getSum();
     }
     
     public String getName() {

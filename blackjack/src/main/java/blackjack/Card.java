@@ -5,8 +5,8 @@ package blackjack;
  * @author sanderengelthilo
  */
 public class Card {
-	private String rank;
-	private String suit;
+	private final String rank;
+	private final String suit;
 	
 	public Card(String rank, String suit) {
 		this.rank = rank;

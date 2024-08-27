@@ -12,7 +12,8 @@ import java.io.InputStreamReader;
  */
 public class Deck {
 	// Initialize list of cards
-	private final List<Card> cards = new ArrayList<>();
+	private final List<Card> originalCards = new ArrayList<>(); // Original full list of cards
+	private List<Card> cards = new ArrayList<>(); // Current list of cards
 	
 	// Constructor to load deck from InputStream
 	public Deck(InputStream inputStream) throws IOException {
@@ -25,9 +26,15 @@ public class Deck {
 			String line;
 			while ((line = br.readLine()) != null) {
 				String[] parts = line.split(" ");
-				cards.add(new Card(parts[0], parts[1]));
+				Card card = new Card(parts[0], parts[1]);
+				originalCards.add(card);
 			}
 		}
+		reset(); // Fill current deck using full deck
+	}
+	
+	public void reset() {
+		cards = new ArrayList<>(originalCards);
 	}
 	
 	// Return cards in deck

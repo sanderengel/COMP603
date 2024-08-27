@@ -13,7 +13,7 @@ public class Gamestate {
     
     // Instance variables
     private boolean gameOver;
-    private double payout;
+    private double payoutMultiplier;
 	private String resultText;
 	
 	// Bools for control of naturals
@@ -28,9 +28,9 @@ public class Gamestate {
     }
     
     // Set the state of the game to over and record the result
-    public void setGameState(double payout, String resultText) {
+    private void setState(double payoutMultiplier, String resultText) {
         this.gameOver = true;
-        this.payout = payout;
+        this.payoutMultiplier = payoutMultiplier;
 		this.resultText = resultText;
     }
     
@@ -40,7 +40,7 @@ public class Gamestate {
     }
 	
 	public void playerBust(Player player, Dealer dealer) {
-		setGameState(0.0, player.getName() + " busted! " + dealer.getName() + " wins!");
+		setState(-1.0, player.getName() + " busted! " + dealer.getName() + " wins!");
 	}
     
 	// We should move this function to Blackjack.java
@@ -66,48 +66,33 @@ public class Gamestate {
 		// Cross check for naturals
 		if (playerNatural) {
 			if (dealerNatural) {
-				setGameState(1.0, "Both " + player.getName() + " and " + dealer.getName() + " have naturals, it's a tie!");
+				setState(0.0, "Both " + player.getName() + " and " + dealer.getName() + " have naturals, it's a tie!");
 			} else {
-				setGameState(2.5, player.getName() + " has a natural win!");
+				setState(1.5, player.getName() + " has a natural win!");
 			}
 		} else if (dealerNatural) {
-			setGameState(0.0, dealer.getName() + " has a natural win!");
+			setState(-1.0, dealer.getName() + " has a natural win!");
 		}
 		
 	}
 	
-//	// Needs to be updated
-//	// Checks for and handles cases where player or dealer has natural
-//	public void natural(Player player, Dealer dealer) {
-//		// Check if player has natural
-//		if (player.getSum() == 21) { // Player has natural
-//			System.out.print("Player has a natural!");
-//			if (dealer.getSum() == 21) { // Dealer also has natural
-//				setGameState(1.0, "Both " + player.getName() + " and " + dealer.getName() + " have naturals, it's a tie!");
-//			} else {
-//				setGameState(2.5, player.getName() + " has a natural win!");
-//			}		
-//		} else if (dealer.getSum() == 21) {
-//			setGameState(0.0, dealer.getName() + " has a natural win!");
-//		}
-//	}
-	
     // Determines winner base on player's and dealer's cards on hand
     public void winner(Player player, Dealer dealer) {
+		System.out.println("");
         if(dealer.isBust()) {
-            setGameState(2.0, dealer.getName() + " busts! " + player.getName() + " wins!");
+            setState(1.0, dealer.getName() + " busts! " + player.getName() + " wins!");
         } else if (player.getSum() > dealer.getSum()) {
-            setGameState(2.0, player.getName() + " wins!");
+            setState(1.0, player.getName() + " wins!");
         } else if (player.getSum() < dealer.getSum()) {
-            setGameState(0.0, player.getName() + " loses!");
+            setState(-1.0, player.getName() + " loses!");
         } else {
-            setGameState(1.0, "Both " + player.getName() + " and " + dealer.getName() + " have " + player.getSum() + ", it's a tie!");
+            setState(0.0, "Both " + player.getName() + " and " + dealer.getName() + " have " + player.getSum() + ", it's a tie!");
         }
     }
     
     // Resulting payout
-    public double getPayout() {
-        return payout;
+    public double getPayoutMultiplier() {
+        return payoutMultiplier;
     }
 	
 	// Result text

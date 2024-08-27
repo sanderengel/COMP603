@@ -40,14 +40,14 @@ public class OutputHandler {
         displayPlayerHand(player);
         displayDealerVisibleCard(dealer);
     }
-    
-//    public void revealHiddenCard(Card hiddenCard) {
-//        System.out.println("Dealer's hidden card: " + hiddenCard);
-//    }
 	
 	public void revealHiddenCard(Dealer dealer) {
 		System.out.println("\n" + dealer.getName() + "'s hidden card: " + dealer.getHiddenCard());
 		displaySum(dealer);
+	}
+	
+	public void displayPlayerBalance(Player player) {
+		System.out.println(player.getName() + "'s balance is now $" + player.getBalance() + ".");
 	}
     
     public void displayResult(Gamestate gamestate) {
