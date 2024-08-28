@@ -1,5 +1,3 @@
-// NOT DONE AT ALLLLLL
-
 package blackjack;
 
 import java.io.IOException;
