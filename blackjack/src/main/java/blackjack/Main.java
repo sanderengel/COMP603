@@ -6,7 +6,6 @@ package blackjack;
  * @author sanderengelthilo
  */
 public class Main {
-	
     public static void main(String[] args) {
 		
 		Double startingBalance = 1000.0;
@@ -50,7 +49,5 @@ public class Main {
 			// Ask to play again
 			System.out.println("\nWould you like to play again? (Y or N)");
 		}
-		
-		
     }
 }
