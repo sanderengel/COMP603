@@ -35,16 +35,25 @@ public class Gamestate {
         return gameOver;
     }
 	
+	// Getters for naturals
+	public boolean isPlayerNatural() {
+		return playerNatural;
+	}
+	
+	public boolean isDealerNatural() {
+		return dealerNatural;
+	}
+	
 	public void playerBust(Player player, Dealer dealer) {
 		setState(-1.0, player.getName() + " busted! " + dealer.getName() + " wins!");
 	}
     
 	// We should move this function to Blackjack.java
-	public void natural(Player player, Dealer dealer, OutputHandler outputHandler) {
+	public void natural(Player player, Dealer dealer) { //, OutputHandler outputHandler) {
 		
 		// Check if player has natural
 		if (player.getSum() == 21) {
-			outputHandler.printNatural(player);
+			OutputHandler.printNatural(player);
 			playerNatural = true;
 		}
 		
@@ -52,7 +61,7 @@ public class Gamestate {
 		if (dealer.getHand().getCards().get(0).getValue() >= 10) {
 			System.out.println(dealer.getName() + " might have a natural. Checking hidden card...");
 			if (dealer.getSum() == 21) {
-				outputHandler.printNatural(dealer);
+				OutputHandler.printNatural(dealer);
 				dealerNatural = true;
 			} else {
 				System.out.println("They did not have a natural...\n");
@@ -62,7 +71,7 @@ public class Gamestate {
 		// Cross check for naturals
 		if (playerNatural) {
 			if (dealerNatural) {
-				setState(0.0, "Both " + player.getName() + " and " + dealer.getName() + " have naturals, it's a tie!");
+				setState(0.0, "Both " + player.getName() + " and " + dealer.getName() + " have naturals, it is a tie!");
 			} else {
 				setState(1.5, player.getName() + " has a natural win!");
 			}
@@ -82,7 +91,7 @@ public class Gamestate {
         } else if (player.getSum() < dealer.getSum()) {
             setState(-1.0, player.getName() + " loses!");
         } else {
-            setState(0.0, "Both " + player.getName() + " and " + dealer.getName() + " have " + player.getSum() + ", it's a tie!");
+            setState(0.0, "Both " + player.getName() + " and " + dealer.getName() + " have " + player.getSum() + ", it is a tie!");
         }
     }
     

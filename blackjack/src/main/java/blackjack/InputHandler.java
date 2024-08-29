@@ -1,7 +1,6 @@
 package blackjack;
 
 import java.util.Scanner;
-import java.util.InputMismatchException;
 import java.util.Locale;
 
 /**
@@ -36,16 +35,9 @@ public class InputHandler {
 				return false;
 			default:
 				System.out.println("Please input a valid answer (Y or N)");
-				System.out.println("");
 				return getStartConfirm(); // Recursively call function again if input is invalid
 		}
 	}
-	
-//	public double getBet() {
-//		System.out.println("How much would like to bet?");
-//		double bet = scanner.nextDouble();
-//		return bet;
-//	}
 	
 	public double getBet(double balance) {
 		double bet = 0.0;
@@ -54,8 +46,10 @@ public class InputHandler {
 		while (!valid) {
 			try {
 				System.out.println("How much would like to bet?");
-				bet = scanner.nextDouble();
-				scanner.nextLine(); // Consume leftover newline character
+				String input = scanner.nextLine(); // Read entire line as input
+				bet = Double.parseDouble(input); // Attempt to parse input as double
+//				bet = scanner.nextDouble();
+//				scanner.nextLine(); // Consume leftover newline character
 				
 				if (bet <= 0) { // Check if bet is positive
 					System.out.println("Please enter a positive number.");
@@ -65,9 +59,9 @@ public class InputHandler {
 					valid = true;
 				}
 				
-			} catch (InputMismatchException e) {
+			} catch (NumberFormatException e) {
 				System.out.println("Please input a numeric bet value.");
-				scanner.next(); // Clear invalid input
+//				scanner.next(); // Clear invalid input
 			}
 		}
 		

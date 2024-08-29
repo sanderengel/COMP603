@@ -4,17 +4,18 @@ package blackjack;
  *
  * @author jasseldoong
  */
-public class Dealer extends Player {
-    private Card hiddenCard;
-    
-    public Dealer(String name) {
-        super(name, 0.0); // Dealer has no balance
-    }
-    
-    public void setHiddenCard(Card card) {
-        hiddenCard = card;
-        addCard(card);
-    }
+public class Dealer extends Person {
+	private Card hiddenCard;
+
+	// Constructor, sets dealer's name to "Dealer"
+	public Dealer() {
+		super("Dealer");
+	}
+	
+	public void setHiddenCard(Card card) {
+		hiddenCard = card;
+		addCard(card);
+	}
 	
 	public Card getHiddenCard() {
 		return hiddenCard;
@@ -30,17 +31,4 @@ public class Dealer extends Player {
 	public double getBalance() {
 		return 0.0;
 	}
-    
-//    public void makeMove(Deck deck, OutputHandler outputHandler) {
-//        while (getSum() < 17) {
-//            Card newCard = deck.dealCard();
-//            addCard(newCard);
-//        }
-//        outputHandler.revealHiddenCard(hiddenCard);
-//    }
-    
-//    @Override
-//    public String toString() {
-//        return "Dealer's hand: "+ getHand();
-//	}
 }
