@@ -15,15 +15,25 @@ public class InputHandler {
 		scanner = new Scanner(System.in).useLocale(Locale.US);
 	}
 	
+	// Method to check if user wants to quit program
+	private void checkQuit(String input) {
+		if (input.equalsIgnoreCase("Q") || input.equalsIgnoreCase("QUIT")) {
+			System.out.println("Quitting game. Goodbye!");
+			System.exit(0); // Terminate
+		}
+	}
+	
 	public String getName() {
 		System.out.println("What is your name?");
 		String name = scanner.nextLine();
+		checkQuit(name); // Check if user wants to quit
 		System.out.println("");
 		return name;
 	}
 	
 	public boolean getStartConfirm() {
 		String startConfirm = scanner.nextLine();
+		checkQuit(startConfirm); // Check if user wants to quit
 		switch (startConfirm.toUpperCase()) {
 			case "Y":
 			case "YES":
@@ -47,9 +57,8 @@ public class InputHandler {
 			try {
 				System.out.println("How much would like to bet?");
 				String input = scanner.nextLine(); // Read entire line as input
+				checkQuit(input); // Check if user wants to quit
 				bet = Double.parseDouble(input); // Attempt to parse input as double
-//				bet = scanner.nextDouble();
-//				scanner.nextLine(); // Consume leftover newline character
 				
 				if (bet <= 0) { // Check if bet is positive
 					System.out.println("Please enter a positive number.");
@@ -72,6 +81,7 @@ public class InputHandler {
 	public String getAction() {
 		System.out.println("Do you wish to HIT (H) or STAND (S)? ");
 		String action = scanner.nextLine();
+		checkQuit(action); // Check if user wants to quit
 		return action.toUpperCase();
 	}
 }
