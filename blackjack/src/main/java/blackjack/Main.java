@@ -14,7 +14,8 @@ public class Main {
 		Double startingBalance = 1000.0;
 		
 		System.out.println("Welcome to BlackJack!");
-		System.out.println("You start with a balance of $" + OutputHandler.toIntIfPossible(startingBalance) + ".\n");
+		System.out.println("You start with a balance of $" + OutputHandler.toIntIfPossible(startingBalance) + ".");
+		System.out.println("You can quit the game at any time by entering 'Q' or 'QUIT'.\n");
 		
 		// Create instance of InputHandler
 		InputHandler inputHandler = new InputHandler();
