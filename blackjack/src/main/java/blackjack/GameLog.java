@@ -17,13 +17,13 @@ public class GameLog {
 	private final String timestamp;
 	private final String playerName;
 	private final double startingBalance;
-	private final List<HandLog> handsPlayed;
+	private final List<HandLog> hands;
 	
-	public GameLog(String playerName, double startingBalance, List<HandLog> handsPlayed) {
+	public GameLog(String playerName, double startingBalance, List<HandLog> hands) {
 		this.timestamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
 		this.playerName = playerName;
 		this.startingBalance = startingBalance;
-		this.handsPlayed = handsPlayed;		
+		this.hands = hands;		
 	}
 	
 	public void saveGameLog() {
@@ -50,7 +50,7 @@ public class GameLog {
 				"timestamp='" + timestamp + "\'" +
 				", playerName='" + playerName + "\'" +
 				", startingBalance=" + startingBalance +
-                ", handsPlayed=" + handsPlayed +
+                ", hands=" + hands +
                 '}';
 	}
 }

@@ -44,6 +44,7 @@ public abstract class Person {
 	// Abstract player specific methods
 	public abstract void adjustBalance(double bet, double payoutMultiplier);
 	public abstract double getBalance();
+	public abstract int getGamesPlayed();
 	public abstract void incrementHandsPlayed();
 	public abstract int getHandsPlayed();
 	public abstract void updateHandsWon(double payoutMultiplier);

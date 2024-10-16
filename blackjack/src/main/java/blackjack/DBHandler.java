@@ -10,10 +10,14 @@ import java.sql.SQLException;
  */
 public class DBHandler {
 	
-	private static final String DB_URL = "jdbc:derby:BlackjackDB;create=true";
+	private static final String DB_URL = "jdbc:derby:BlackjackDB; create=true"; // Store DB in root dir
 	
 	public static Connection connect() throws SQLException {
-		return DriverManager.getConnection(DB_URL);
+		// System.out.println("Working directory: " + new java.io.File(".").getAbsolutePath());
+		Connection conn = DriverManager.getConnection(DB_URL);
+		System.out.println("Connected to database at: " + DB_URL);
+		return conn;
+		// return DriverManager.getConnection(DB_URL);
 	} 
 	
 	public static void initializeDB() {
@@ -26,9 +30,13 @@ public class DBHandler {
 					+ "HandsPlayed INT, "
 					+ "HandsWon INT)";
 			statement.executeUpdate(createTableSQL);
+			System.out.println("Players table created successfully.");
 		} catch (SQLException e) {
-			if (!e.getSQLState().equals("X0Y32")) {
-				// X0Y32 means the table already exists, so we ignore that error
+			if (e.getSQLState().equals("X0Y32")) {
+				// X0Y32 means the table already exists
+				System.out.println("Players table already exists");
+			} else {
+				// Print the full stack trace for unexpected errors
 				e.printStackTrace();
 			}
 		}

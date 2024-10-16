@@ -7,14 +7,16 @@ package blackjack;
  */
 public class Player extends Person {
 	private double balance;
+	private int gamesPlayed;
 	private int handsPlayed;
 	private int handsWon;
 	
-	public Player(String name, double startingBalance) {
+	public Player(String name, double balance, int gamesPlayed, int handsPlayed, int handsWon) {
 		super(name);
-		this.balance = startingBalance;
-		this.handsPlayed = 0;
-		this.handsWon = 0;
+		this.balance = balance;
+		this.gamesPlayed = gamesPlayed;
+		this.handsPlayed = handsPlayed;
+		this.handsWon = handsWon;
 	}
 	
 	@Override
@@ -25,6 +27,11 @@ public class Player extends Person {
 	@Override
 	public double getBalance() {
 		return balance;
+	}
+	
+	@Override
+	public int getGamesPlayed() {
+		return gamesPlayed;
 	}
 	
 	@Override

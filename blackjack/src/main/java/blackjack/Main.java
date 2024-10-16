@@ -11,10 +11,11 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
 		
-		Double startingBalance = 1000.0;
+		// Connect to DB
+		DBHandler.initializeDB();
 		
 		System.out.println("Welcome to BlackJack!");
-		System.out.println("You start with a balance of $" + OutputHandler.toIntIfPossible(startingBalance) + ".");
+		// System.out.println("You start with a balance of $" + OutputHandler.toIntIfPossible(startingBalance) + ".");
 		System.out.println("You can quit the game at any time by entering 'Q' or 'QUIT'.\n");
 		
 		// Create instance of InputHandler
@@ -23,17 +24,32 @@ public class Main {
 		// Get player name
 		String playerName = inputHandler.getName();
 		
-		// Create instance of Player and Dealer
-		Player player = new Player(playerName, startingBalance);
+//		// Create instance of Player and Dealer
+//		Player player = new Player(playerName, startingBalance);
+//		Dealer dealer = new Dealer();
+
+		// Get player if already in database, otherwise create new player
+		Player player = PlayerDBHandler.getPlayer(playerName);
+		if (player == null) {
+			// Player does not exist, initialize new one
+			System.out.print("Player does not exist, creating new one");
+			player = new Player(playerName, 1000.0, 1, 0, 0); // Defualt balance is 1000
+		}
+		
+		// Store player's starting balance
+		double startingBalance = player.getBalance();
+		
+		// Create instance of Dealer
 		Dealer dealer = new Dealer();
 		
 		// Create instance of Blackjack class
 		Blackjack blackjack = new Blackjack(player, dealer, inputHandler);
 		
 		// Create list to store logs of played hands
-		List<HandLog> handsPlayed = new ArrayList<>(); 
+		List<HandLog> hands = new ArrayList<>(); 
 		
-		System.out.println("Nice to have you, " + player.getName() + ". Are you ready? (Y or N)");
+		System.out.println("Nice to have you, " + player.getName() + ". Your balance is " + startingBalance + ".");
+		System.out.println("Are you ready? (Y or N)");
 		
 		// Run games continuously
 		while (true) {
@@ -66,7 +82,7 @@ public class Main {
 			handLog.fillHandLog(player, dealer, gamestate);
 
 			// Append hand log to list of played hands
-			handsPlayed.add(handLog);
+			hands.add(handLog);
 			
 			// Display result and player balance
 			OutputHandler.displayResult(gamestate);
@@ -82,7 +98,10 @@ public class Main {
 		}
 		
 		// Log and store game to file
-		GameLog gameLog = new GameLog(playerName, startingBalance, handsPlayed);
+		GameLog gameLog = new GameLog(playerName, startingBalance, hands);
 		gameLog.saveGameLog();
+		
+		// Update player information in database
+		PlayerDBHandler.addOrUpdatePlayer(player);
     }
 }
