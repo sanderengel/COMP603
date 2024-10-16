@@ -21,7 +21,7 @@ public class Dealer extends Person {
 		return hiddenCard;
 	}
 	
-	// Override balance-related methods as Dealer has no balance
+	// Override balance and hands played related methods
 	@Override
 	public void adjustBalance(double bet, double payoutMultiplier) {
 		// Do nothing
@@ -30,5 +30,15 @@ public class Dealer extends Person {
 	@Override
 	public double getBalance() {
 		return 0.0;
+	}
+	
+	@Override
+	public void incrementHandsPlayed() {
+		// Do nothing
+	}
+	
+	@Override
+	public int getHandsPlayed() {
+		return 0;
 	}
 }

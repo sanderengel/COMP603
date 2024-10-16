@@ -41,7 +41,9 @@ public abstract class Person {
 		return name + "'s hand: " + hand;
 	}
 	
-	// Abstract methods for balance operations
+	// Abstract methods for balance and hands played operations
 	public abstract void adjustBalance(double bet, double payoutMultiplier);
 	public abstract double getBalance();
+	public abstract void incrementHandsPlayed();
+	public abstract int getHandsPlayed();
 }

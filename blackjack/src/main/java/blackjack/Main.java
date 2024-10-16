@@ -58,6 +58,9 @@ public class Main {
 			// Update player balance
 			player.adjustBalance(bet, gamestate.getPayoutMultiplier());
 			
+			// Incremenet player played hands
+			player.incrementHandsPlayed();
+			
 			// Pass information to hand log
 			handLog.fillHandLog(player, dealer, gamestate);
 
