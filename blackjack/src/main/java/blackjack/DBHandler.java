@@ -23,7 +23,8 @@ public class DBHandler {
 					+ "Name VARCHAR(50) PRIMARY KEY, "
 					+ "Balance DOUBLE, "
 					+ "GamesPlayed INT, "
-					+ "HandsPlayed INT)";
+					+ "HandsPlayed INT, "
+					+ "HandsWon INT)";
 			statement.executeUpdate(createTableSQL);
 		} catch (SQLException e) {
 			if (!e.getSQLState().equals("X0Y32")) {

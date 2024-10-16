@@ -8,11 +8,13 @@ package blackjack;
 public class Player extends Person {
 	private double balance;
 	private int handsPlayed;
+	private int handsWon;
 	
 	public Player(String name, double startingBalance) {
 		super(name);
 		this.balance = startingBalance;
 		this.handsPlayed = 0;
+		this.handsWon = 0;
 	}
 	
 	@Override
@@ -33,6 +35,18 @@ public class Player extends Person {
 	@Override
 	public int getHandsPlayed() {
 		return handsPlayed;
+	}
+	
+	@Override
+	public void updateHandsWon(double payoutMultiplier) {
+		if (payoutMultiplier > 0) {
+			this.handsWon++;
+		}
+	}
+	
+	@Override
+	public int getHandsWon() {
+		return handsWon;
 	}
 }
 
