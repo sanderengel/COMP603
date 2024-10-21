@@ -4,91 +4,178 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.ArrayList;
+
+/*
+*
+* @author jassel doong
+*/
 
 public class BlackjackGUI extends JFrame {
     private Player player;
     private Dealer dealer;
-    private InputHandler inputHandler;
     private Blackjack blackjack;
-    private JTextArea textArea;
-    private JTextField inputField;
-    private JButton submitButton;
-    
-    public BlackjackGUI(Player player, Dealer dealer, InputHandler inputHandler) {
-        this.player = player;
-        this.dealer = dealer;
-        this.inputHandler = inputHandler;
+    private InputHandler inputHandler;
+    private List<HandLog> hands;
 
-        // Set up the frame
-        setTitle("Blackjack Game");
-        setSize(400, 300);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    private JLabel playerBalanceLabel;
+    private JTextArea gameLogArea;
+    private JButton playButton, quitButton, betButton;
+
+    private JPanel playerCardsPanel;
+    private JPanel dealerCardsPanel;
+
+    public BlackjackGUI() {
+        setTitle("BlackJack");
+        setSize(600, 600);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Create components
-        textArea = new JTextArea();
-        textArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        
-        inputField = new JTextField();
-        submitButton = new JButton("Submit");
-        
-        // Add components to the frame
-        add(scrollPane, BorderLayout.CENTER);
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.add(inputField, BorderLayout.CENTER);
-        panel.add(submitButton, BorderLayout.EAST);
-        add(panel, BorderLayout.SOUTH);
+        // Initialize game components
+        DBHandler.initializeDB();
+        inputHandler = new InputHandler();
+        hands = new ArrayList<>();
 
-        // Action listener for the submit button
-        submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                processInput(inputField.getText());
-                inputField.setText("");
-            }
-        });
+        // Create UI elements
+        createComponents();
 
-        setVisible(true);
+        // Custom dialog for player name input
+        PlayerNameDialog nameDialog = new PlayerNameDialog(this);
+        nameDialog.setVisible(true);
+        String playerName = nameDialog.getPlayerName();
+
+        // Get player from DB or create new one
+        player = PlayerDBHandler.getPlayer(playerName);
+        if (player == null) {
+            player = new Player(playerName, 1000.0, 1, 0, 0); // Default balance
+        }
+        dealer = new Dealer();
+        blackjack = new Blackjack(player, dealer, inputHandler);
+
+        updatePlayerBalance();
+        appendGameLog("Welcome, " + player.getName() + "! Starting balance: $" + player.getBalance());
     }
 
-    private void processInput(String input) {
-        // Handle input commands
-        if (input.equalsIgnoreCase("Q") || input.equalsIgnoreCase("QUIT")) {
-            textArea.append("Thank you for playing!\n");
-            System.exit(0);
-        } else {
-            // Process the input (e.g., betting, playing a hand)
-            // You will need to implement the specific game logic here
-            // For example:
-            if (input.startsWith("BET ")) {
-                try {
-                    double bet = Double.parseDouble(input.split(" ")[1]);
-                    // Validate and place bet
-                } catch (NumberFormatException ex) {
-                    textArea.append("Invalid bet amount. Please enter a number.\n");
-                }
-            }
-            // Add additional commands for other game actions (hit, stand, etc.)
+    private void createComponents() {
+        // Player balance label
+        playerBalanceLabel = new JLabel("Balance: $1000");
+        add(playerBalanceLabel, BorderLayout.NORTH);
+
+        // Game log area
+        gameLogArea = new JTextArea();
+        gameLogArea.setEditable(false);
+        add(new JScrollPane(gameLogArea), BorderLayout.CENTER);
+
+        // Player and dealer cards panels
+        playerCardsPanel = new JPanel();
+        dealerCardsPanel = new JPanel();
+        playerCardsPanel.setBorder(BorderFactory.createTitledBorder("Your Cards"));
+        dealerCardsPanel.setBorder(BorderFactory.createTitledBorder("Dealer's Cards"));
+        
+        // Using FlowLayout for cards
+        playerCardsPanel.setLayout(new FlowLayout());
+        dealerCardsPanel.setLayout(new FlowLayout());
+        
+        add(playerCardsPanel, BorderLayout.WEST);
+        add(dealerCardsPanel, BorderLayout.EAST);
+
+        // Button panel
+        JPanel buttonPanel = new JPanel();
+        playButton = new JButton("Play");
+        quitButton = new JButton("Quit");
+        betButton = new JButton("Place Bet");
+
+        buttonPanel.add(betButton);
+        buttonPanel.add(playButton);
+        buttonPanel.add(quitButton);
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        // Set up action listeners
+        playButton.addActionListener(new PlayAction());
+        quitButton.addActionListener(e -> System.exit(0));
+        betButton.addActionListener(new BetAction());
+    }
+
+    private class PlayAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            playGame();
         }
+    }
+
+    private class BetAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            placeBet();
+        }
+    }
+
+    private void playGame() {
+        // Clear previous cards before playing a new hand
+        playerCardsPanel.removeAll();
+        dealerCardsPanel.removeAll();
+
+        // Game logic (playing a hand)
+        Gamestate gamestate = new Gamestate();
+        blackjack.playHand(gamestate);
+        
+        // Adjust balance based on result
+        double bet = inputHandler.getBet(player.getBalance());
+        player.adjustBalance(bet, gamestate.getPayoutMultiplier());
+
+        // Log game result and update UI
+        HandLog handLog = new HandLog(player.getBalance(), bet);
+        handLog.fillHandLog(player, dealer, gamestate);
+        hands.add(handLog);
+
+        updatePlayerBalance();
+        OutputHandler.displayResult(gamestate);
+        appendGameLog("Player balance after game: $" + player.getBalance());
+
+        // Display the cards
+        displayCards();
+
+        if (player.getBalance() <= 0) {
+            appendGameLog("Sorry, you are out of money. Game over.");
+            playButton.setEnabled(false);
+        }
+    }
+
+    private void placeBet() {
+        double bet = inputHandler.getBet(player.getBalance());
+        appendGameLog("Placed bet of $" + bet);
+    }
+
+    private void displayCards() {
+        // Display player cards
+        for (Card card : player.getHand().getCards()) {
+            playerCardsPanel.add(new JLabel(card.toString())); // Assuming Card class has a proper toString method
+        }
+
+        // Display dealer cards
+        for (Card card : dealer.getHand().getCards()) {
+            dealerCardsPanel.add(new JLabel(card.toString())); // Assuming Card class has a proper toString method
+        }
+
+        playerCardsPanel.revalidate(); // Refresh the panel
+        playerCardsPanel.repaint(); // Repaint to show the new cards
+        dealerCardsPanel.revalidate(); // Refresh the panel
+        dealerCardsPanel.repaint(); // Repaint to show the new cards
+    }
+
+    private void updatePlayerBalance() {
+        playerBalanceLabel.setText("Balance: $" + player.getBalance());
+    }
+
+    private void appendGameLog(String text) {
+        gameLogArea.append(text + "\n");
     }
 
     public static void main(String[] args) {
-        // Connect to DB and initialize player
-        DBHandler.initializeDB();
-        InputHandler inputHandler = new InputHandler();
-        String playerName = inputHandler.getName();
-        Player player = PlayerDBHandler.getPlayer(playerName);
-        if (player == null) {
-            player = new Player(playerName, 1000.0, 1, 0, 0);
-        }
-
-        // Create dealer and Blackjack instance
-        Dealer dealer = new Dealer();
-        Blackjack blackjack = new Blackjack(player, dealer, inputHandler);
-        
-        // Launch GUI
-        new BlackjackGUI(player, dealer, inputHandler);
+        SwingUtilities.invokeLater(() -> {
+            BlackjackGUI mainGUI = new BlackjackGUI();
+            mainGUI.setVisible(true);
+        });
     }
 }
