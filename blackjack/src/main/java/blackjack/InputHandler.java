@@ -28,10 +28,11 @@ public class InputHandler {
 		String name = scanner.nextLine();
 		checkQuit(name); // Check if user wants to quit
 		System.out.println("");
+		System.out.println("Nice to have you, " + name + ".");
 		return name;
 	}
 	
-	public boolean getStartConfirm() {
+	public boolean getConfirmation() {
 		String startConfirm = scanner.nextLine();
 		checkQuit(startConfirm); // Check if user wants to quit
 		switch (startConfirm.toUpperCase()) {
@@ -45,7 +46,7 @@ public class InputHandler {
 				return false;
 			default:
 				System.out.println("Please input a valid answer (Y or N)");
-				return getStartConfirm(); // Recursively call function again if input is invalid
+				return getConfirmation(); // Recursively call function again if input is invalid
 		}
 	}
 	
@@ -84,4 +85,5 @@ public class InputHandler {
 		checkQuit(action); // Check if user wants to quit
 		return action.toUpperCase();
 	}
+
 }

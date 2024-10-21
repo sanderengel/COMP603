@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package blackjack;
 
 /**
@@ -36,6 +32,47 @@ public class HandLog {
 		this.dealerNatural = gamestate.isDealerNatural();
 		this.balanceAfterHand = player.getBalance();
 	}
+	
+	// Getters for all variables
+    public double getBalanceBeforeHand() {
+        return balanceBeforeHand;
+    }
+
+    public double getAmountBetted() {
+        return amountBetted;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public String getPlayerHand() {
+        return playerHand;
+    }
+
+    public String getDealerHand() {
+        return dealerHand;
+    }
+
+    public int getPlayerHandSum() {
+        return playerHandSum;
+    }
+
+    public int getDealerHandSum() {
+        return dealerHandSum;
+    }
+
+    public boolean isPlayerNatural() {
+        return playerNatural;
+    }
+
+    public boolean isDealerNatural() {
+        return dealerNatural;
+    }
+
+    public double getBalanceAfterHand() {
+        return balanceAfterHand;
+    }
 	
 	@Override
 	public String toString() {

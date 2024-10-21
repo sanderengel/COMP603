@@ -17,13 +17,17 @@ public class GameLog {
 	private final String timestamp;
 	private final String playerName;
 	private final double startingBalance;
-	private final List<HandLog> hands;
+	private List<HandLog> hands;
 	
-	public GameLog(String playerName, double startingBalance, List<HandLog> hands) {
-		this.timestamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
-		this.playerName = playerName;
-		this.startingBalance = startingBalance;
-		this.hands = hands;		
+	public GameLog(String timestamp, String playerName, double startingBalance) {
+        // Generate a new timestamp if none is provided
+        this.timestamp = (timestamp != null) ? timestamp : new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+        this.playerName = playerName;
+        this.startingBalance = startingBalance;
+    }
+	
+	public void setHands(List<HandLog> hands) {
+		this.hands = hands;
 	}
 	
 	public void saveGameLog() {
@@ -42,6 +46,18 @@ public class GameLog {
 			gson.toJson(this, writer);
 		} catch (IOException e) {
 		}
+	}
+	
+	public String getTimestamp() {
+		return timestamp;
+	}
+	
+	public String getPlayerName() {
+		return playerName;
+	}
+	
+	public double getStartingBalance() {
+		return startingBalance;
 	}
 	
 	@Override

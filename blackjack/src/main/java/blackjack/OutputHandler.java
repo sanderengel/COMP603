@@ -1,5 +1,7 @@
 package blackjack;
 
+import java.util.List;
+
 /**
  *
  * @author Jassel Doong
@@ -38,7 +40,22 @@ public class OutputHandler {
 	public static void displayPlayerBalance(Player player) {
 		System.out.println(player.getName() + "'s balance is now $" + toIntIfPossible(player.getBalance()) + ".");
 	}
+	
+	public static void displayPlayerStatistics(Player player) {
+		System.out.println("Your records with us are as follows:");
+		System.out.println("Name: " + player.getName());
+		System.out.println("Balance: " + player.getBalance());
+		System.out.println("Total games played: " + player.getGamesPlayed());
+		System.out.println("Total hands played: " + player.getHandsPlayed());
+		System.out.println("Total hands won: " + player.getHandsWon());
+		System.out.println("");
+	}
     
+	public static void displayGameStatistics(Player player) {
+		List<GameLog> gameLogs = GameDBHandler.getGames(player.getName());
+		// Do something more, print info for each game
+	}
+	
     public static void displayResult(Gamestate gamestate) {
         System.out.println(gamestate.getResultText());
     }
