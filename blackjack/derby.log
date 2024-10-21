@@ -1,4 +1,4 @@
-Mon Oct 21 23:54:41 NZDT 2024 Thread[#1,main,5,main] Cleanup action starting
+Tue Oct 22 00:00:37 NZDT 2024 Thread[#22,AWT-EventQueue-0,6,main] Cleanup action starting
 java.sql.SQLException: Failed to start database 'BlackjackDB' with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@43e45247, see the next exception for details.
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(SQLExceptionFactory.java:115)
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(SQLExceptionFactory.java:141)
@@ -16,12 +16,26 @@ java.sql.SQLException: Failed to start database 'BlackjackDB' with class loader 
 	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:253)
 	at blackjack.DBHandler.connect(DBHandler.java:18)
 	at blackjack.DBHandler.initializeDB(DBHandler.java:25)
-	at blackjack.BlackjackGUI.main(BlackjackGUI.java:79)
+	at blackjack.BlackjackGUI.<init>(BlackjackGUI.java:36)
+	at blackjack.BlackjackGUI.lambda$main$1(BlackjackGUI.java:177)
+	at java.desktop/java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:318)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:773)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:720)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:714)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:400)
+	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:87)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:742)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
 Caused by: ERROR XJ040: Failed to start database 'BlackjackDB' with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@43e45247, see the next exception for details.
 	at org.apache.derby.shared.common.error.StandardException.newException(StandardException.java:300)
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory.wrapArgsForTransportAcrossDRDA(SQLExceptionFactory.java:170)
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(SQLExceptionFactory.java:75)
-	... 16 more
+	... 30 more
 Caused by: ERROR XSDB6: Another instance of Derby may have already booted the database /Users/jasseldoong/Documents/GitHub/COMP603/blackjack/BlackjackDB.
 	at org.apache.derby.shared.common.error.StandardException.newException(StandardException.java:300)
 	at org.apache.derby.shared.common.error.StandardException.newException(StandardException.java:295)
@@ -70,7 +84,7 @@ Caused by: ERROR XSDB6: Another instance of Derby may have already booted the da
 	at java.base/java.security.AccessController.doPrivileged(AccessController.java:571)
 	at org.apache.derby.impl.jdbc.EmbedConnection.startPersistentService(EmbedConnection.java:4036)
 	at org.apache.derby.impl.jdbc.EmbedConnection.bootDatabase(EmbedConnection.java:2816)
-	... 13 more
+	... 27 more
 ============= begin nested exception, level (1) ===========
 java.sql.SQLException: Another instance of Derby may have already booted the database /Users/jasseldoong/Documents/GitHub/COMP603/blackjack/BlackjackDB.
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(SQLExceptionFactory.java:115)
@@ -88,7 +102,21 @@ java.sql.SQLException: Another instance of Derby may have already booted the dat
 	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:253)
 	at blackjack.DBHandler.connect(DBHandler.java:18)
 	at blackjack.DBHandler.initializeDB(DBHandler.java:25)
-	at blackjack.BlackjackGUI.main(BlackjackGUI.java:79)
+	at blackjack.BlackjackGUI.<init>(BlackjackGUI.java:36)
+	at blackjack.BlackjackGUI.lambda$main$1(BlackjackGUI.java:177)
+	at java.desktop/java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:318)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:773)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:720)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:714)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:400)
+	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:87)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:742)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
 Caused by: ERROR XSDB6: Another instance of Derby may have already booted the database /Users/jasseldoong/Documents/GitHub/COMP603/blackjack/BlackjackDB.
 	at org.apache.derby.shared.common.error.StandardException.newException(StandardException.java:300)
 	at org.apache.derby.shared.common.error.StandardException.newException(StandardException.java:295)
@@ -137,7 +165,7 @@ Caused by: ERROR XSDB6: Another instance of Derby may have already booted the da
 	at java.base/java.security.AccessController.doPrivileged(AccessController.java:571)
 	at org.apache.derby.impl.jdbc.EmbedConnection.startPersistentService(EmbedConnection.java:4036)
 	at org.apache.derby.impl.jdbc.EmbedConnection.bootDatabase(EmbedConnection.java:2816)
-	... 13 more
+	... 27 more
 ============= end nested exception, level (1) ===========
 ============= begin nested exception, level (2) ===========
 ERROR XSDB6: Another instance of Derby may have already booted the database /Users/jasseldoong/Documents/GitHub/COMP603/blackjack/BlackjackDB.
@@ -200,10 +228,24 @@ ERROR XSDB6: Another instance of Derby may have already booted the database /Use
 	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:253)
 	at blackjack.DBHandler.connect(DBHandler.java:18)
 	at blackjack.DBHandler.initializeDB(DBHandler.java:25)
-	at blackjack.BlackjackGUI.main(BlackjackGUI.java:79)
+	at blackjack.BlackjackGUI.<init>(BlackjackGUI.java:36)
+	at blackjack.BlackjackGUI.lambda$main$1(BlackjackGUI.java:177)
+	at java.desktop/java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:318)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:773)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:720)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:714)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:400)
+	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:87)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:742)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
 ============= end nested exception, level (2) ===========
 Cleanup action completed
-Mon Oct 21 23:54:48 NZDT 2024 Thread[#1,main,5,main] Cleanup action starting
+Tue Oct 22 00:00:41 NZDT 2024 Thread[#22,AWT-EventQueue-0,6,main] Cleanup action starting
 java.sql.SQLException: Failed to start database 'BlackjackDB' with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@43e45247, see the next exception for details.
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(SQLExceptionFactory.java:115)
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(SQLExceptionFactory.java:141)
@@ -221,12 +263,26 @@ java.sql.SQLException: Failed to start database 'BlackjackDB' with class loader 
 	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:253)
 	at blackjack.DBHandler.connect(DBHandler.java:18)
 	at blackjack.PlayerDBHandler.getPlayer(PlayerDBHandler.java:59)
-	at blackjack.BlackjackGUI.main(BlackjackGUI.java:82)
+	at blackjack.BlackjackGUI.<init>(BlackjackGUI.java:49)
+	at blackjack.BlackjackGUI.lambda$main$1(BlackjackGUI.java:177)
+	at java.desktop/java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:318)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:773)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:720)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:714)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:400)
+	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:87)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:742)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
 Caused by: ERROR XJ040: Failed to start database 'BlackjackDB' with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@43e45247, see the next exception for details.
 	at org.apache.derby.shared.common.error.StandardException.newException(StandardException.java:300)
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory.wrapArgsForTransportAcrossDRDA(SQLExceptionFactory.java:170)
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(SQLExceptionFactory.java:75)
-	... 16 more
+	... 30 more
 Caused by: ERROR XSDB6: Another instance of Derby may have already booted the database /Users/jasseldoong/Documents/GitHub/COMP603/blackjack/BlackjackDB.
 	at org.apache.derby.shared.common.error.StandardException.newException(StandardException.java:300)
 	at org.apache.derby.shared.common.error.StandardException.newException(StandardException.java:295)
@@ -275,7 +331,7 @@ Caused by: ERROR XSDB6: Another instance of Derby may have already booted the da
 	at java.base/java.security.AccessController.doPrivileged(AccessController.java:571)
 	at org.apache.derby.impl.jdbc.EmbedConnection.startPersistentService(EmbedConnection.java:4036)
 	at org.apache.derby.impl.jdbc.EmbedConnection.bootDatabase(EmbedConnection.java:2816)
-	... 13 more
+	... 27 more
 ============= begin nested exception, level (1) ===========
 java.sql.SQLException: Another instance of Derby may have already booted the database /Users/jasseldoong/Documents/GitHub/COMP603/blackjack/BlackjackDB.
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(SQLExceptionFactory.java:115)
@@ -293,7 +349,21 @@ java.sql.SQLException: Another instance of Derby may have already booted the dat
 	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:253)
 	at blackjack.DBHandler.connect(DBHandler.java:18)
 	at blackjack.PlayerDBHandler.getPlayer(PlayerDBHandler.java:59)
-	at blackjack.BlackjackGUI.main(BlackjackGUI.java:82)
+	at blackjack.BlackjackGUI.<init>(BlackjackGUI.java:49)
+	at blackjack.BlackjackGUI.lambda$main$1(BlackjackGUI.java:177)
+	at java.desktop/java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:318)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:773)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:720)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:714)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:400)
+	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:87)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:742)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
 Caused by: ERROR XSDB6: Another instance of Derby may have already booted the database /Users/jasseldoong/Documents/GitHub/COMP603/blackjack/BlackjackDB.
 	at org.apache.derby.shared.common.error.StandardException.newException(StandardException.java:300)
 	at org.apache.derby.shared.common.error.StandardException.newException(StandardException.java:295)
@@ -342,7 +412,7 @@ Caused by: ERROR XSDB6: Another instance of Derby may have already booted the da
 	at java.base/java.security.AccessController.doPrivileged(AccessController.java:571)
 	at org.apache.derby.impl.jdbc.EmbedConnection.startPersistentService(EmbedConnection.java:4036)
 	at org.apache.derby.impl.jdbc.EmbedConnection.bootDatabase(EmbedConnection.java:2816)
-	... 13 more
+	... 27 more
 ============= end nested exception, level (1) ===========
 ============= begin nested exception, level (2) ===========
 ERROR XSDB6: Another instance of Derby may have already booted the database /Users/jasseldoong/Documents/GitHub/COMP603/blackjack/BlackjackDB.
@@ -405,6 +475,20 @@ ERROR XSDB6: Another instance of Derby may have already booted the database /Use
 	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:253)
 	at blackjack.DBHandler.connect(DBHandler.java:18)
 	at blackjack.PlayerDBHandler.getPlayer(PlayerDBHandler.java:59)
-	at blackjack.BlackjackGUI.main(BlackjackGUI.java:82)
+	at blackjack.BlackjackGUI.<init>(BlackjackGUI.java:49)
+	at blackjack.BlackjackGUI.lambda$main$1(BlackjackGUI.java:177)
+	at java.desktop/java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:318)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:773)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:720)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:714)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:400)
+	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:87)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:742)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
 ============= end nested exception, level (2) ===========
 Cleanup action completed
