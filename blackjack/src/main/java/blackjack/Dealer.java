@@ -20,6 +20,22 @@ public class Dealer extends Person {
 	public Card getHiddenCard() {
 		return hiddenCard;
 	}
+        
+        public Card getVisibleCard() {
+        // Ensure the hand is not null and has at least one card
+        if (hand != null && hand.getCards().size() > 0) {
+            return hand.getCards().get(0); // Assuming the first card is the visible one
+            }
+            return null; // Return null if there are no cards
+        }
+
+        
+        public void revealHiddenCard() {
+            if(hiddenCard != null){
+                addCard(hiddenCard);
+                hiddenCard = null;
+            }
+        }
 	
 	// Override player related methods
 	@Override

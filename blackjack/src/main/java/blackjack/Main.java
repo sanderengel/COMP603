@@ -3,12 +3,8 @@ package blackjack;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.ArrayList;
+import javax.swing.SwingUtilities;
 
-/**
- *
- * @author jasseldoong
- * @author sanderengelthilo
- */
 public class Main {
 	
     public static void main(String[] args) throws SQLException {
@@ -149,5 +145,12 @@ public class Main {
 		
 		// Update player information in database, even if no games where played
 		PlayerDBHandler.addOrUpdatePlayer(player);
+
+    public static void main(String[] args) {
+        // Initialize and launch the Blackjack GUI
+        SwingUtilities.invokeLater(() -> {
+            BlackjackGUI gui = new BlackjackGUI();
+            gui.createAndShowGUI(); // Call the method to set up the GUI
+        });
     }
 }
