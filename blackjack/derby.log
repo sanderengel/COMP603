@@ -1,4 +1,4 @@
-Tue Oct 22 00:00:37 NZDT 2024 Thread[#22,AWT-EventQueue-0,6,main] Cleanup action starting
+Tue Oct 22 13:22:05 NZDT 2024 Thread[#22,AWT-EventQueue-0,6,main] Cleanup action starting
 java.sql.SQLException: Failed to start database 'BlackjackDB' with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@43e45247, see the next exception for details.
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(SQLExceptionFactory.java:115)
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(SQLExceptionFactory.java:141)
@@ -245,7 +245,7 @@ ERROR XSDB6: Another instance of Derby may have already booted the database /Use
 	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
 ============= end nested exception, level (2) ===========
 Cleanup action completed
-Tue Oct 22 00:00:41 NZDT 2024 Thread[#22,AWT-EventQueue-0,6,main] Cleanup action starting
+Tue Oct 22 13:22:07 NZDT 2024 Thread[#22,AWT-EventQueue-0,6,main] Cleanup action starting
 java.sql.SQLException: Failed to start database 'BlackjackDB' with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@43e45247, see the next exception for details.
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(SQLExceptionFactory.java:115)
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(SQLExceptionFactory.java:141)

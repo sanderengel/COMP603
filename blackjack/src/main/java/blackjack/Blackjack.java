@@ -8,7 +8,7 @@ import java.io.InputStream;
  * @author sanderengelthilo
  */
 public class Blackjack {
-	private Deck deck;
+	Deck deck;
 	private Dealer dealer; // provided by Main
 	private Player player; // Provided by Main
 	private InputHandler inputHandler; // Provided by Main
