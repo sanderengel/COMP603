@@ -5,6 +5,7 @@ package blackjack;
  * @author sanderengelthilo
  */
 public class HandLog {
+	private final String gameTimestamp;
 	private final double balanceBeforeHand;
 	private final double amountBetted;
 	private String result;
@@ -16,8 +17,29 @@ public class HandLog {
 	private boolean dealerNatural;
 	private double balanceAfterHand;
 	
-	public HandLog(double balanceBeforeHand, double amountBetted) {
+	// Constructor with all parameters
+	// Used for DB fetching
+	public HandLog(String gameTimestamp, double balanceBeforeHand, double amountBetted, String result, 
+			String playerHand, String dealerHand, int playerHandSum, int dealerHandSum, 
+			boolean playerNatural, boolean dealerNatural, double balanceAfterHand) {
+		this.gameTimestamp = gameTimestamp;
+		this.balanceBeforeHand = balanceBeforeHand;
+		this.amountBetted = amountBetted;
+		this.result = result;
+		this.playerHand = playerHand;
+		this.dealerHand = dealerHand;
+		this.playerHandSum = playerHandSum;
+		this.dealerHandSum = dealerHandSum;
+		this.playerNatural = playerNatural;
+		this.dealerNatural = dealerNatural;
+		this.balanceAfterHand = balanceAfterHand;
+	}
+	
+	// Constructor with only gameTimestamp, balanceBeforeHand and amountBetted parameters
+	// Used to log new hands
+	public HandLog(String gameTimestamp, double balanceBeforeHand, double amountBetted) {
 		// Balance before hand is played and amount betted is determined before hand is played
+		this.gameTimestamp = gameTimestamp;
 		this.balanceBeforeHand = balanceBeforeHand;
 		this.amountBetted = amountBetted;
 	}
@@ -34,6 +56,10 @@ public class HandLog {
 	}
 	
 	// Getters for all variables
+	public String getGameTimestamp() {
+		return gameTimestamp;
+	}
+	
     public double getBalanceBeforeHand() {
         return balanceBeforeHand;
     }
@@ -77,7 +103,8 @@ public class HandLog {
 	@Override
 	public String toString() {
         return "HandLog{" +
-                "balanceBeforeHand=" + balanceBeforeHand +
+				"gameTimestamp=" + gameTimestamp +
+                ", balanceBeforeHand=" + balanceBeforeHand +
                 ", amountBetted=" + amountBetted +
                 ", result='" + result + '\'' +
 				", playerHand=" + playerHand +

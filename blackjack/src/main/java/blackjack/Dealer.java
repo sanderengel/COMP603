@@ -33,6 +33,11 @@ public class Dealer extends Person {
 	}
 	
 	@Override
+	public void incrementGamesPlayed() {
+		// Do nothing
+	}
+	
+	@Override
 	public int getGamesPlayed() {
 		return 0;
 	}

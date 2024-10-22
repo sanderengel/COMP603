@@ -30,6 +30,11 @@ public class Player extends Person {
 	}
 	
 	@Override
+	public void incrementGamesPlayed() {
+		this.gamesPlayed++;
+	}
+	
+	@Override
 	public int getGamesPlayed() {
 		return gamesPlayed;
 	}

@@ -36,8 +36,11 @@ public class DBHandler {
 			// Create game table if it doesn't already exist
 			String createGameTableSQL = "CREATE TABLE Game ("
 					+ "Timestamp CHAR(19) PRIMARY KEY, "
-					+ "Playername VARCHAR(50), "
-					+ "Startingbalance DOUBLE, "
+					+ "PlayerName VARCHAR(50), "
+					+ "StartingBalance DOUBLE, "
+					+ "NumberHands INT, "
+					+ "NumberHandsWon INT, "
+					+ "EndingBalance DOUBLE, "
 					+ "FOREIGN KEY (Playername) REFERENCES Player(Name))";
 			statement.executeUpdate(createGameTableSQL);
 			// System.out.println("Game table created successfully.");

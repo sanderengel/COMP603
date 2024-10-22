@@ -53,7 +53,53 @@ public class OutputHandler {
     
 	public static void displayGameStatistics(Player player) {
 		List<GameLog> gameLogs = GameDBHandler.getGames(player.getName());
-		// Do something more, print info for each game
+		
+		// Check if the gameLogs list is empty
+		if (gameLogs.isEmpty()) {
+			System.out.println("You have not played any games.");
+			System.out.println("");
+			return; // Early return if no games are found
+		}
+		
+		// Iterate through each game log
+		for (int i = 0; i < gameLogs.size(); i++) {
+			GameLog gameLog = gameLogs.get(i);
+			System.out.println("Game number: " + (i+1));
+			System.out.println("Timestamp: " + gameLog.getTimestamp());
+			System.out.println("Starting balance: " + gameLog.getStartingBalance());
+			System.out.println("Number of hands played: " + gameLog.getNumHands());
+			System.out.println("Number of hands won: " + gameLog.getNumHandsWon());
+			System.out.println("Ending balance: " + gameLog.getEndingBalance());
+			System.out.println("");
+		}
+	}
+	
+	public static void displayHandStatistics(Player player) {
+		List<HandLog> handLogs = HandDBHandler.getHands(player.getName());
+		
+		// Check if the handLogs list is empty
+		if (handLogs.isEmpty()) {
+			System.out.println("You have not played any hands.");
+			System.out.println("");
+			return; // Early return if no hands are found
+		}
+		
+		// Iterate through each hand log
+		for (int i = 0; i < handLogs.size(); i++) {
+			HandLog handLog = handLogs.get(i);
+			System.out.println("Hand number: " + (i+1));
+			System.out.println("Game timestamp: " + handLog.getGameTimestamp());
+			System.out.println("Balance before hand: " + handLog.getBalanceBeforeHand());
+			System.out.println("Result: " + handLog.getResult());
+			System.out.println("Player's hand: " + handLog.getPlayerHand());
+			System.out.println("Dealer's hand: " + handLog.getDealerHand());
+			System.out.println("Sum of player's hand: " + handLog.getPlayerHandSum());
+			System.out.println("Sum of dealer's hand: " + handLog.getDealerHandSum());
+			System.out.println("Player had natural: " + handLog.isPlayerNatural());
+			System.out.println("Dealer had natural: " + handLog.isDealerNatural());
+			System.out.println("Balance after hand: " + handLog.getBalanceAfterHand());
+			System.out.println("");
+		}
 	}
 	
     public static void displayResult(Gamestate gamestate) {

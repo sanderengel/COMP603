@@ -17,17 +17,46 @@ public class GameLog {
 	private final String timestamp;
 	private final String playerName;
 	private final double startingBalance;
+	private int numHands;
+	private int numHandsWon;
+	private double endingBalance;
 	private List<HandLog> hands;
 	
-	public GameLog(String timestamp, String playerName, double startingBalance) {
-        // Generate a new timestamp if none is provided
-        this.timestamp = (timestamp != null) ? timestamp : new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+	// Constructor with all parameters
+	// Used for DB fetching
+	public GameLog(String timestamp, String playerName, double startingBalance, int numHands, int numHandsWon, double endingBalance) {
+        this.timestamp = timestamp;
         this.playerName = playerName;
         this.startingBalance = startingBalance;
+		this.numHands = numHands;
+		this.numHandsWon = numHandsWon;
+		this.endingBalance = endingBalance;
+    }
+	
+	// Constructor with only playerName and startingBalance parameters
+	// Used to log new games
+	public GameLog(String playerName, double startingBalance) {
+        this.timestamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+        this.playerName = playerName;
+        this.startingBalance = startingBalance;
+		this.numHands = 0;        // Initialize to 0 by default
+		this.numHandsWon = 0;     // Initialize to 0 by default
+		this.endingBalance = 0.0; // Initialize to 0 by default
     }
 	
 	public void setHands(List<HandLog> hands) {
 		this.hands = hands;
+		this.numHands = hands.size();
+	}
+	
+	public void setEndingBalance(double endingBalance) {
+		this.endingBalance = endingBalance;
+	}
+	
+	public void updateHandsWon(double payoutMultiplier) {
+		if (payoutMultiplier > 0) {
+			this.numHandsWon++;
+		}
 	}
 	
 	public void saveGameLog() {
@@ -48,6 +77,7 @@ public class GameLog {
 		}
 	}
 	
+	// Getters
 	public String getTimestamp() {
 		return timestamp;
 	}
@@ -60,12 +90,26 @@ public class GameLog {
 		return startingBalance;
 	}
 	
+	public int getNumHands() {
+		return numHands;
+	}
+	
+	public int getNumHandsWon() {
+		return numHandsWon;
+	}
+	
+	public double getEndingBalance() {
+		return endingBalance;
+	}
+ 	
 	@Override
 	public String toString() {
 		return "GameLog{" +
 				"timestamp='" + timestamp + "\'" +
 				", playerName='" + playerName + "\'" +
-				", startingBalance=" + startingBalance +
+				", startingBalance=" + startingBalance + "\'" +
+				", numberOfHands=" + numHands + "\'" +
+				", numberOfHandsWon=" + numHandsWon + "\'" +
                 ", hands=" + hands +
                 '}';
 	}

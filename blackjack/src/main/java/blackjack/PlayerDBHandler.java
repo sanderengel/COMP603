@@ -36,7 +36,7 @@ public class PlayerDBHandler {
 		try (PreparedStatement pstatement = conn.prepareStatement(insertSQL)) {
 			pstatement.setString(1, player.getName());
 			pstatement.setDouble(2, player.getBalance());
-			pstatement.setInt(3, player.getGamesPlayed()); // Should always be 1
+			pstatement.setInt(3, player.getGamesPlayed());
 			pstatement.setInt(4, player.getHandsPlayed());
 			pstatement.setInt(5, player.getHandsWon());
 			pstatement.executeUpdate();
@@ -47,7 +47,7 @@ public class PlayerDBHandler {
 		String updateSQL = "UPDATE Player SET Balance = ?, GamesPlayed = ?, HandsPlayed = ?, HandsWon = ? WHERE Name = ?";
 		try (PreparedStatement pstatement = conn.prepareStatement(updateSQL)) {
 			pstatement.setDouble(1, player.getBalance());
-			pstatement.setInt(2, player.getGamesPlayed() + 1); // Update games played
+			pstatement.setInt(2, player.getGamesPlayed()); // Update games played
 			pstatement.setInt(3, player.getHandsPlayed()); // Update hands played
 			pstatement.setInt(4, player.getHandsWon()); // Update hands won
 			pstatement.setString(5, player.getName());

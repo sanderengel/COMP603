@@ -1,5 +1,6 @@
 package blackjack;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -10,7 +11,7 @@ import java.util.ArrayList;
  */
 public class Main {
 	
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 		
 		// Define default starting balance
 		Double defaultStartingBalance = 1000.0;
@@ -36,90 +37,117 @@ public class Main {
 		if (player == null) {
 			// Player does not exist, initialize new one
 			System.out.print("We see this is your first time here! You start with a balance of " + defaultStartingBalance + ".\n");
-			player = new Player(playerName, defaultStartingBalance, 1, 0, 0);
+			player = new Player(playerName, defaultStartingBalance, 0, 0, 0);
 		} else {
 			// Player already exists
 			System.out.println("Welcome back! Your current balance with us is " + player.getBalance() + ".");
-			// Ask if player wants to check their statistics
+			
+			// Ask if player wants to check their overall statistics
 			System.out.println("Before we begin, would you like to check your records with us? (Y or N)");
 			if (inputHandler.getConfirmation()) {
 				OutputHandler.displayPlayerStatistics(player);
-				System.out.println("Would you like to also check records for specific hands? (Y or N)");
+				
+				// Game statistics
+				System.out.println("Would you like to also check records for games played? (Y or N)");
 				if (inputHandler.getConfirmation()) {
 					OutputHandler.displayGameStatistics(player);
 				}
+				
+				// Hand statistics
+				System.out.println("Would you like to also check records for hands played? (Y or N)");
+				if (inputHandler.getConfirmation()) {
+					OutputHandler.displayHandStatistics(player); // Write function
+				}
+				
 			}
 		}
 		
-		// Store player's starting balance
-		double startingBalance = player.getBalance();
-		
-		// Create instance of Dealer
-		Dealer dealer = new Dealer();
-		
-		// Create instance of Blackjack class
-		Blackjack blackjack = new Blackjack(player, dealer, inputHandler);
-		
-		// Create game log
-		GameLog gameLog = new GameLog(null, playerName, startingBalance);
-		
-		// Create list to store logs of played hands
-		List<HandLog> hands = new ArrayList<>(); 
-		
-		System.out.println("Are you ready? (Y or N)");
-		
-		// Run games continuously
-		while (true) {
-			// Check if player wants to play (again)
-			if (!inputHandler.getConfirmation()) {
-				break;
-			}
+		System.out.println("Are you ready to play? (Y or N)");
+		// Check if player wants to play
+		if (inputHandler.getConfirmation()) {
 			
-			// Get player bet
-			double bet = inputHandler.getBet(player.getBalance());
-			System.out.println("Great, your bet is $" + OutputHandler.toIntIfPossible(bet) + ". Let's begin!");
+			// Store player's starting balance
+			double startingBalance = player.getBalance();
 			
-			// Initialize new handLog
-			HandLog handLog = new HandLog(player.getBalance(), bet);
-			
-			// Initialize new gamestate
-			Gamestate gamestate = new Gamestate();
-			
-			// play hand of blackjack, updating all needed information inside gamestate
-			blackjack.playHand(gamestate);
+			// Increment player's number of games played
+			player.incrementGamesPlayed();
 
-			// Update player balance
-			player.adjustBalance(bet, gamestate.getPayoutMultiplier());
-			
-			// Update player played and won hands
-			player.incrementHandsPlayed();
-			player.updateHandsWon(gamestate.getPayoutMultiplier());
-			
-			// Pass information to hand log
-			handLog.fillHandLog(player, dealer, gamestate);
+			// Create instance of Dealer
+			Dealer dealer = new Dealer();
 
-			// Append hand log to list of played hands
-			hands.add(handLog);
+			// Create instance of Blackjack class
+			Blackjack blackjack = new Blackjack(player, dealer, inputHandler);
+
+			// Create game log
+			GameLog gameLog = new GameLog(playerName, startingBalance);
+			GameDBHandler.insertGameTimestamp(gameLog.getTimestamp()); // Insert initial game timestamp to DB
+
+			// Create list to store logs of played hands
+			List<HandLog> hands = new ArrayList<>(); 
 			
-			// Display result and player balance
-			OutputHandler.displayResult(gamestate);
-			OutputHandler.displayPlayerBalance(player);
-			
-			// If enough funds, ask to play again
-			if (player.getBalance() > 0) {
-				// Actual confirmation is checked on start of loop again
-				System.out.println("\nWould you like to play again? (Y or N)");
-			} else {
-				System.out.println("\nSorry, you are out of money. Game over.");
-				break;
+			// Run games continuously
+			while (true) {
+
+				// Get player bet
+				double bet = inputHandler.getBet(player.getBalance());
+				System.out.println("Great, your bet is $" + OutputHandler.toIntIfPossible(bet) + ". Let's begin!");
+
+				// Initialize new handLog
+				HandLog handLog = new HandLog(gameLog.getTimestamp(), player.getBalance(), bet);
+
+				// Initialize new gamestate
+				Gamestate gamestate = new Gamestate();
+
+				// play hand of blackjack, updating all needed information inside gamestate
+				blackjack.playHand(gamestate);
+
+				// Save payout multiplier
+				double payoutMultipler = gamestate.getPayoutMultiplier();
+
+				// Update player balance
+				player.adjustBalance(bet, payoutMultipler);
+
+				// Update player played and won hands
+				player.incrementHandsPlayed();
+				player.updateHandsWon(payoutMultipler);
+
+				// Update number of won hands in game log
+				gameLog.updateHandsWon(payoutMultipler);
+
+				// Handle hand log
+				handLog.fillHandLog(player, dealer, gamestate); // Pass information to hand log
+				hands.add(handLog); // Append hand log to list of played hands
+				HandDBHandler.insertHand(handLog); // Save hand log to DB
+
+				// Display result and player balance
+				OutputHandler.displayResult(gamestate);
+				OutputHandler.displayPlayerBalance(player);
+
+				// If enough funds, ask to play again
+				if (player.getBalance() > 0) {
+					System.out.println("\nWould you like to play again? (Y or N)");
+					if (!inputHandler.getConfirmation()) {
+						break;
+					}
+				} else {
+					System.out.println("\nSorry, you are out of money. Game over.");
+					break;
+				}
 			}
+
+			// Save hand list and ending balance to game log
+			gameLog.setHands(hands);
+			gameLog.setEndingBalance(player.getBalance());
+
+			// Save game log to .txt
+			gameLog.saveGameLog();
+
+			// Update game log to DB
+			// Important this runs after player is added/updated
+			GameDBHandler.updateGame(gameLog);
 		}
 		
-		// Save hand list to game log and save game log
-		gameLog.setHands(hands);
-		gameLog.saveGameLog();
-		
-		// Update player information in database
+		// Update player information in database, even if no games where played
 		PlayerDBHandler.addOrUpdatePlayer(player);
     }
 }
