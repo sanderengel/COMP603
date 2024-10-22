@@ -23,10 +23,6 @@ public class Main {
 		
 		// Get player name
 		String playerName = inputHandler.getName();
-		
-//		// Create instance of Player and Dealer
-//		Player player = new Player(playerName, startingBalance);
-//		Dealer dealer = new Dealer();
 
 		// Get player if already in database, otherwise create new player
 		Player player = PlayerDBHandler.getPlayer(playerName);
@@ -34,6 +30,9 @@ public class Main {
 			// Player does not exist, initialize new one
 			System.out.print("We see this is your first time here! You start with a balance of " + defaultStartingBalance + ".\n");
 			player = new Player(playerName, defaultStartingBalance, 0, 0, 0);
+			
+			// Add player to DB
+			PlayerDBHandler.addOrUpdatePlayer(player);
 		} else {
 			// Player already exists
 			System.out.println("Welcome back! Your current balance with us is " + player.getBalance() + ".");
@@ -138,19 +137,18 @@ public class Main {
 			// Save game log to .txt
 			gameLog.saveGameLog();
 
+			// Update player information
+			PlayerDBHandler.addOrUpdatePlayer(player);
+			
 			// Update game log to DB
-			// Important this runs after player is added/updated
 			GameDBHandler.updateGame(gameLog);
 		}
-		
-		// Update player information in database, even if no games where played
-		PlayerDBHandler.addOrUpdatePlayer(player);
 
-    public static void main(String[] args) {
-        // Initialize and launch the Blackjack GUI
-        SwingUtilities.invokeLater(() -> {
-            BlackjackGUI gui = new BlackjackGUI();
-            gui.createAndShowGUI(); // Call the method to set up the GUI
-        });
+//    public static void main(String[] args) {
+//        // Initialize and launch the Blackjack GUI
+//        SwingUtilities.invokeLater(() -> {
+//            BlackjackGUI gui = new BlackjackGUI();
+//            gui.createAndShowGUI(); // Call the method to set up the GUI
+//        });
     }
 }

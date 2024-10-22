@@ -11,31 +11,7 @@ import java.util.List;
  * @author sanderengelthilo
  */
 public class GameDBHandler {
-	
-//	public static void insertGame(GameLog gameLog) throws SQLException {
-//		try (Connection conn = DBHandler.connect()) {
-//			String insertSQL = "INSERT INTO Game ("
-//					+ "Timestamp, "
-//					+ "PlayerName, "
-//					+ "StartingBalance, "
-//					+ "NumberHands, "
-//					+ "NumberHandsWon, "
-//					+ "EndingBalance) "
-//					+ "VALUES (?, ?, ?, ?, ?, ?)";
-//			try (PreparedStatement pstatement = conn.prepareStatement(insertSQL)) {
-//				pstatement.setString(1, gameLog.getTimestamp());
-//				pstatement.setString(2, gameLog.getPlayerName());
-//				pstatement.setDouble(3, gameLog.getStartingBalance());
-//				pstatement.setInt(4, gameLog.getNumHands());
-//				pstatement.setInt(5, gameLog.getNumHandsWon());
-//				pstatement.setDouble(6, gameLog.getEndingBalance());
-//				pstatement.executeUpdate();
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//	}
-	
+		
 	// Method to insert only the timestamp
     public static void insertGameTimestamp(String timestamp) throws SQLException {
         try (Connection conn = DBHandler.connect()) {
