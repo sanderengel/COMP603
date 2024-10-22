@@ -14,10 +14,23 @@ public class ControllerGUI {
         this.model = model;
         this.view = view;
 
-        // Add an ActionListener to the nameButton
+        // Add ActionListeners
         view.getNameButton().addActionListener((ActionEvent e) -> {
 			handleNameInput();
 		});
+		view.getStartPlayingButton().addActionListener((ActionEvent e) -> {
+			handleStartPlaying();
+		});
+		view.getViewRecordsButton().addActionListener((ActionEvent e) -> {
+			handleViewRecords();
+		});
+		view.getViewGamesButton().addActionListener((ActionEvent e) -> {
+			handleViewGames();
+		});
+		view.getViewHandsButton().addActionListener((ActionEvent e) -> {
+			handleViewHands();
+		});
+		
     }
 
     // Method to handle name input and check if it's a new player
@@ -33,7 +46,26 @@ public class ControllerGUI {
         // Check if the player is new or returning by passing the name to the model
         boolean isNewPlayer = model.checkIfNewPlayer(playerName);
 		
+		// Update GUI
 		view.updatePlayerStatus(isNewPlayer, model.getPlayer().getBalance());
+		
     }
+	
+	private void handleViewRecords() {
+		view.updateViewRecords(model.getPlayer());
+	}
+	
+	private void handleViewGames() {
+		view.updateViewGames(model.getPlayer());
+	}
+	
+	private void handleViewHands() {
+		view.updateViewHands(model.getPlayer());
+	}
+	
+	private void handleStartPlaying() {
+		view.updateStartPlaying();
+	}
+	
 }
 
