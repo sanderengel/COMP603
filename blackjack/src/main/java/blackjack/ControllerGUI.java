@@ -2,6 +2,9 @@ package blackjack;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author sanderengelthilo
@@ -19,7 +22,11 @@ public class ControllerGUI {
 			handleNameInput();
 		});
 		view.getStartPlayingButton().addActionListener((ActionEvent e) -> {
-			handleStartPlaying();
+			try {
+				handleStartPlaying();
+			} catch (SQLException ex) {
+				Logger.getLogger(ControllerGUI.class.getName()).log(Level.SEVERE, null, ex);
+			}
 		});
 		view.getViewRecordsButton().addActionListener((ActionEvent e) -> {
 			handleViewRecords();
@@ -29,6 +36,9 @@ public class ControllerGUI {
 		});
 		view.getViewHandsButton().addActionListener((ActionEvent e) -> {
 			handleViewHands();
+		});
+		view.getBetButton().addActionListener((ActionEvent e) -> {
+			handleBet();
 		});
 		
     }
@@ -43,28 +53,34 @@ public class ControllerGUI {
             return;
         }
 
-        // Check if the player is new or returning by passing the name to the model
-        boolean isNewPlayer = model.checkIfNewPlayer(playerName);
+		// Register player to model
+		model.registerPlayer(playerName);
 		
 		// Update GUI
-		view.updatePlayerStatus(isNewPlayer, model.getPlayer().getBalance());
+		view.updatePlayerStatus(model.isNewPlayer(), model.getPlayer().getBalance());
 		
     }
 	
 	private void handleViewRecords() {
-		view.updateViewRecords(model.getPlayer());
+		view.updateViewRecords(model.getPlayerStatistics());
 	}
 	
 	private void handleViewGames() {
-		view.updateViewGames(model.getPlayer());
+		view.updateViewGames(model.getGameStatistics());
 	}
 	
 	private void handleViewHands() {
-		view.updateViewHands(model.getPlayer());
+		view.updateViewHands(model.getHandStatistics());
 	}
 	
-	private void handleStartPlaying() {
-		view.updateStartPlaying();
+	private void handleStartPlaying() throws SQLException {
+		// Start game
+		// model.playGame();
+		view.updateGetBet();
+	}
+	
+	private void handleBet() {
+		// Write this
 	}
 	
 }

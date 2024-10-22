@@ -9,11 +9,11 @@ import java.util.List;
  */
 public class ViewGUI {
     private final JFrame frame;
-	private final JPanel mainPanel, labelPanel, inputPanel;
+	private final JPanel mainPanel, labelPanel, nameInputPanel, betInputPanel;
     private JPanel actionPanel;
     private final JLabel firstLabel, secondLabel;
-    private final JTextField nameInput;
-	private final JButton nameButton, viewRecordsButton, viewGamesButton, viewHandsButton, startPlayingButton;
+    private final JTextField nameInput, betInput;
+	private final JButton nameButton, viewRecordsButton, viewGamesButton, viewHandsButton, startPlayingButton, betButton;
 	private final JTextArea textArea;
 	private final JScrollPane scrollPane;
 
@@ -30,9 +30,11 @@ public class ViewGUI {
 		labelPanel = new JPanel();
 		labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.Y_AXIS));
 
-		// Create a panel for input/button, aligned at the center
-        inputPanel = new JPanel();
-        inputPanel.setLayout(new FlowLayout());
+		// Create panels for name input/buttons, aligned at the center
+        nameInputPanel = new JPanel();
+        nameInputPanel.setLayout(new FlowLayout());
+		betInputPanel = new JPanel();
+		betInputPanel.setLayout(new FlowLayout());
 		
         // Create components
         firstLabel = new JLabel("Welcome to BlackJack!");
@@ -50,6 +52,10 @@ public class ViewGUI {
 		viewGamesButton = new JButton("View Games");
 		viewHandsButton = new JButton("View Hands");
 		
+		// Create betting components for later
+		betInput = new JTextField(10);
+		betButton = new JButton("Bet");
+		
 		// Create start playing button for later		
 		startPlayingButton = new JButton("Start Playing");
 		
@@ -61,13 +67,15 @@ public class ViewGUI {
 		labelPanel.add(firstLabel);
 		labelPanel.add(secondLabel);
 		
-		// Add input/button to introInputPanel
-		inputPanel.add(nameInput);
-        inputPanel.add(nameButton);
+		// Add input/buttons to input panels
+		nameInputPanel.add(nameInput);
+        nameInputPanel.add(nameButton);
+		betInputPanel.add(betInput);
+		betInputPanel.add(betButton);
 		
         // Add subpanels to the main panel
         mainPanel.add(labelPanel, BorderLayout.NORTH);
-		mainPanel.add(inputPanel, BorderLayout.CENTER);
+		mainPanel.add(nameInputPanel, BorderLayout.CENTER);
 
         // Add mainPanel to the frame
         frame.add(mainPanel);
@@ -79,10 +87,7 @@ public class ViewGUI {
     // Method to update the panel for new/returning players
     public void updatePlayerStatus(boolean isNewPlayer, double balance) {
         // Remove inputPanel after player enters their name
-		mainPanel.remove(inputPanel);
-
-		// Create action panel for buttons
-        actionPanel = new JPanel(new FlowLayout());
+		mainPanel.remove(nameInputPanel);
 
         // Message for new or returning players
         if (isNewPlayer) {
@@ -93,6 +98,9 @@ public class ViewGUI {
 			secondLabel.setText("Your current balance with us is $" + balance + ".");
         }
 
+		// Create action panel for buttons
+        actionPanel = new JPanel(new FlowLayout());
+		
         // Add view buttons only for returning players
         if (!isNewPlayer) {
             actionPanel.add(viewRecordsButton);
@@ -112,7 +120,7 @@ public class ViewGUI {
     }
 	
 	// Method to update the panel to show records for player
-	public void updateViewRecords(Player player) {
+	public void updateViewRecords(String RecordsString) {
 		SwingUtilities.invokeLater(() -> {
 			// Remove actionPanel if it exists
 			if (actionPanel != null) {
@@ -126,7 +134,7 @@ public class ViewGUI {
 			labelPanel.remove(secondLabel);
 
 			// Update textArea
-			textArea.setText(formatPlayerStatistics(player));
+			textArea.setText(RecordsString);
 
 			// Add scrollPane if not done already
 			if (scrollPane.getParent() == null) {
@@ -148,8 +156,8 @@ public class ViewGUI {
 		});
 	}
 
-
-	public void updateViewGames(Player player) {
+	// Method to update the panel to show played games
+	public void updateViewGames(String GamesString) {
 		SwingUtilities.invokeLater(() -> {
 			// Remove actionPanel if it exists
 			if (actionPanel != null) {
@@ -163,7 +171,7 @@ public class ViewGUI {
 			labelPanel.remove(secondLabel);
 
 			// Create JTextArea with game statistics
-			textArea.setText(formatGameStatistics(player));
+			textArea.setText(GamesString);
 
 			// Add scrollPane if not done already
 			if (scrollPane.getParent() == null) {
@@ -185,7 +193,8 @@ public class ViewGUI {
 		});
 	}
 
-	public void updateViewHands(Player player) {
+	// Method to update the panel to show played hands
+	public void updateViewHands(String HandsString) {
 		SwingUtilities.invokeLater(() -> {
 			// Remove actionPanel if it exists
 			if (actionPanel != null) {
@@ -199,7 +208,7 @@ public class ViewGUI {
 			labelPanel.remove(secondLabel);
 
 			// Create JTextArea with game statistics
-			textArea.setText(formatHandStatistics(player));
+			textArea.setText(HandsString);
 
 			// Add scrollPane if not done already
 			if (scrollPane.getParent() == null) {
@@ -221,75 +230,26 @@ public class ViewGUI {
 		});
 	}
 
-	public void updateStartPlaying() {
+	public void updateGetBet() {
+		SwingUtilities.invokeLater(() -> {
+			// Remove actionPanel if it exists
+			if (actionPanel != null) {
+				mainPanel.remove(actionPanel);
+			}
 
-	}
-	
-	// Method to format player statistics similar to OutputHandler
-	private String formatPlayerStatistics(Player player) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Name: ").append(player.getName()).append("\n");
-		sb.append("Current balance: $").append(player.getBalance()).append("\n");
-		sb.append("Total games played: ").append(player.getGamesPlayed()).append("\n");
-		sb.append("Total hands played: ").append(player.getHandsPlayed()).append("\n");
-		sb.append("Total hands won: ").append(player.getHandsWon()).append("\n");
-		return sb.toString();
-	}
-	
-	// Method to format games statistics similar to OutputHandler
-	private String formatGameStatistics(Player player) {
-		StringBuilder sb = new StringBuilder();
-		List<GameLog> gameLogs = GameDBHandler.getGames(player.getName());
+			// Update first label text
+			firstLabel.setText("How much would you like to bet?");
 
-		// Check if the player has played any games
-		if (gameLogs.isEmpty()) {
-			sb.append("You have not played any games.\n");
-			return sb.toString(); // Return early if no games are found
-		}
+			// Remove second label text
+			labelPanel.remove(secondLabel);
 
-		// Iterate through each game log and format the statistics
-		for (int i = 0; i < gameLogs.size(); i++) {
-			GameLog gameLog = gameLogs.get(i);
-			sb.append("Game number: ").append(i + 1).append("\n");
-			sb.append("Timestamp: ").append(gameLog.getTimestamp()).append("\n");
-			sb.append("Starting balance: $").append(gameLog.getStartingBalance()).append("\n");
-			sb.append("Number of hands played: ").append(gameLog.getNumHands()).append("\n");
-			sb.append("Number of hands won: ").append(gameLog.getNumHandsWon()).append("\n");
-			sb.append("Ending balance: $").append(gameLog.getEndingBalance()).append("\n");
-			sb.append("\n"); // Add a blank line between game logs
-		}
-
-		return sb.toString();
-	}
-
-	private String formatHandStatistics(Player player) {
-		StringBuilder sb = new StringBuilder();
-		List<HandLog> handLogs = HandDBHandler.getHands(player.getName());
-
-		// Check if the player has played any hands
-		if (handLogs.isEmpty()) {
-			sb.append("You have not played any hands.\n");
-			return sb.toString(); // Return early if no hands are found
-		}
-
-		// Iterate through each hand log and format the statistics
-		for (int i = 0; i < handLogs.size(); i++) {
-			HandLog handLog = handLogs.get(i);
-			sb.append("Hand number: ").append(i + 1).append("\n");
-			sb.append("Game timestamp: ").append(handLog.getGameTimestamp()).append("\n");
-			sb.append("Balance before hand: $").append(handLog.getBalanceBeforeHand()).append("\n");
-			sb.append("Result: ").append(handLog.getResult()).append("\n");
-			sb.append("Player's hand: ").append(handLog.getPlayerHand()).append("\n");
-			sb.append("Dealer's hand: ").append(handLog.getDealerHand()).append("\n");
-			sb.append("Sum of player's hand: ").append(handLog.getPlayerHandSum()).append("\n");
-			sb.append("Sum of dealer's hand: ").append(handLog.getDealerHandSum()).append("\n");
-			sb.append("Player had natural: ").append(handLog.isPlayerNatural()).append("\n");
-			sb.append("Dealer had natural: ").append(handLog.isDealerNatural()).append("\n");
-			sb.append("Balance after hand: $").append(handLog.getBalanceAfterHand()).append("\n");
-			sb.append("\n"); // Add a blank line between hand logs
-		}
-
-		return sb.toString();
+			// Add betInputPanel to main
+			mainPanel.add(betInputPanel, BorderLayout.CENTER);
+			
+			// Refresh the frame to display the updated components
+			mainPanel.revalidate();
+			mainPanel.repaint();
+		});
 	}
 
     // Getter methods for buttons to allow Controller to add functionality
@@ -315,6 +275,10 @@ public class ViewGUI {
 	
 	public JButton getViewHandsButton() {
 		return viewHandsButton;
+	}
+	
+	public JButton getBetButton() {
+		return betButton;
 	}
 
 }
