@@ -1,44 +1,39 @@
 package blackjack;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 /**
  *
  * @author sanderengelthilo
  */
 public class ControllerGUI {
-	private final ModelGUI model;
-	private final ViewGUI view;
-	
-	public ControllerGUI(ModelGUI model, ViewGUI view) {
-		this.model = model;
-		this.view = view;
-		
-		view.getBetButton().addActionListener((ActionEvent e) -> {
-			placeBet();
+    private final ModelGUI model;
+    private final ViewGUI view;
+
+    public ControllerGUI(ModelGUI model, ViewGUI view) {
+        this.model = model;
+        this.view = view;
+
+        // Add an ActionListener to the nameButton
+        view.getNameButton().addActionListener((ActionEvent e) -> {
+			handleNameInput();
 		});
+    }
+
+    // Method to handle name input and check if it's a new player
+    private void handleNameInput() {
+        // Get the name from the input field
+        String playerName = view.getNameInput().getText().trim();
+
+        // Check if name field is empty
+        if (playerName.isEmpty()) {
+            return;
+        }
+
+        // Check if the player is new or returning by passing the name to the model
+        boolean isNewPlayer = model.checkIfNewPlayer(playerName);
 		
-		// Check if player is new and update view accordingly
-		if (model.isNewPlayer()) {
-			view.updateGameResult("We see this is your first time here! You start with a balance of " + model.getPlayer().getBalance() + ".");
-		} else {
-			view.updateGameResult("Welcome back! Your current balance is " + model.getPlayer().getBalance() + ".");
-		}
-	}
-	
-	private void placeBet() {
-		try {
-			double bet = Double.parseDouble(view.getBetInput().getText());
-			if (bet > model.getPlayer().getBalance()) {
-				view.updateGameResult("Sorry, you are out of money. Game over.");
-			} else {
-				Gamestate gamestate = new Gamestate();
-				model.getBlackjack().playHand(gamestate);
-				model.getPlayer().adjustBalance(bet, gamestate.getPayoutMultiplier());
-				view.updateBalance(model.getPlayer().getBalance());
-				view.updateGameResult("Round completed!");
-			}
-		} catch (NumberFormatException e) {
-			view.updateGameResult("Invalid bet amount.");
-		}
-	}
+		view.updatePlayerStatus(isNewPlayer, model.getPlayer().getBalance());
+    }
 }
+

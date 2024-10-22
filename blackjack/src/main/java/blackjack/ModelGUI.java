@@ -8,34 +8,53 @@ import java.util.List;
  */
 public class ModelGUI {
 	private Player player;
-	private final Blackjack blackjack;
+	private Blackjack blackjack;
+	private boolean isNewPlayer;
 	private final Dealer dealer;
-	private final boolean isNewPlayer;
+	private final double defaultStartingBalance;
 	
-	public ModelGUI(String playerName, double defaultStartingBalance) {
-		// Check if the player already exists in the database
-		player = PlayerDBHandler.getPlayer(playerName);
-		
-		if (player == null) {
-			// Player does not exist, initialize a new one
-			// System.out.println("We see this is your first time here! You start with a balance of " + defaultStartingBalance + ".");
-            player = new Player(playerName, defaultStartingBalance, 0, 0, 0);
-            isNewPlayer = true;
-		} else {
-			// Player already exists
-			// System.out.println("Welcome back! Your current balance with us is " + player.getBalance() + ".");
-            isNewPlayer = false;
-		}
-		
-		// Initialize dealer and blackjack game
+	public ModelGUI() {
 		dealer = new Dealer();
-		blackjack = new Blackjack(player, dealer, new InputHandler());
+		defaultStartingBalance = 1000.0;
+		
+		// Connect to DB
+		DBHandler.initializeDB();
+//		// Check if the player already exists in the database
+//		player = PlayerDBHandler.getPlayer(playerName);
+//		
+//		if (player == null) {
+//			// Player does not exist, initialize a new one
+//			// System.out.println("We see this is your first time here! You start with a balance of " + defaultStartingBalance + ".");
+//            player = new Player(playerName, defaultStartingBalance, 0, 0, 0);
+//            isNewPlayer = true;
+//		} else {
+//			// Player already exists
+//			// System.out.println("Welcome back! Your current balance with us is " + player.getBalance() + ".");
+//            isNewPlayer = false;
+//		}
+//		
+//		// Initialize dealer and blackjack game
+//		dealer = new Dealer();
+//		blackjack = new Blackjack(player, dealer, new InputHandler());
+		
 	}
 	
-	// Method to check if player is new
-	public boolean isNewPlayer() {
-		return isNewPlayer;
-	}
+	public boolean checkIfNewPlayer(String playerName) {
+		// Check if the player already exists in the database
+        player = PlayerDBHandler.getPlayer(playerName);
+
+        if (player == null) {
+            // New player
+            player = new Player(playerName, defaultStartingBalance, 0, 0, 0);
+			PlayerDBHandler.addOrUpdatePlayer(player); // Add new player to DB
+            isNewPlayer = true;
+        } else {
+            // Existing player
+            isNewPlayer = false;
+        }
+        
+        return isNewPlayer;
+    }
 	
 	public Player getPlayer() {
 		return player;

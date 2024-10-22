@@ -10,7 +10,7 @@ public abstract class Person {
 	
 	public Person(String name) {
 		this.name = name;
-                //this.hand = new Hand();
+                //this.hand = new Hand(); // THIS LINE FOR SOME REASON BREAKS THIS WHOLE CLASS
 	}
 	
 	public void addHand() {

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.ArrayList;
 import javax.swing.SwingUtilities;
 
-public class Main {
+public class MainCUI {
 	
     public static void main(String[] args) throws SQLException {
 		
