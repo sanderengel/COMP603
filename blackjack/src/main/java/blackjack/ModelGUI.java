@@ -12,7 +12,6 @@ import java.util.List;
 public class ModelGUI {
 	private Player player;
 	private String playerName;
-	private Blackjack blackjack;
 	private boolean isNewPlayer;
 	private final Dealer dealer;
 	private final double defaultStartingBalance;
@@ -21,6 +20,12 @@ public class ModelGUI {
 	private String gameStatistics;
 	private String handStatistics;
 	private Deck deck;
+	private GameLog gameLog;
+	private List<HandLog> hands;
+	private HandLog handLog; // Will continuously update every hand
+	private Gamestate gamestate; // Will continuously update every hand
+	private double bet;
+	// private BlackjackGUI blackjack; // Will continuously update every hand
 	
 	public ModelGUI() {
 		dealer = new Dealer();
@@ -56,7 +61,7 @@ public class ModelGUI {
 		handStatistics = formatHandStatistics();
     }
 	
-	public void playGame() throws SQLException {
+	public void startGame() throws SQLException {
 		// Increment player's number of games played
 		player.incrementGamesPlayed();
 		
@@ -64,17 +69,11 @@ public class ModelGUI {
 		deck = loadDeck();
 		
 		// Create game log
-		GameLog gameLog = new GameLog(playerName, startingBalance);
+		gameLog = new GameLog(playerName, startingBalance);
 		GameDBHandler.insertGameTimestamp(gameLog.getTimestamp()); // Insert initial game timestamp to DB
 		
 		// Create list to store logs of played hands
-		List<HandLog> hands = new ArrayList<>();
-
-		// FINISH METHOD LATER
-	}
-	
-	public void playHand(Gamestate gamestate) {
-		// Write later
+		hands = new ArrayList<>();
 	}
 	
 	private Deck loadDeck() {
@@ -93,6 +92,32 @@ public class ModelGUI {
 		}
 		
 		return deck;
+	}
+	
+	public void dealHand() {
+		// Initialize new handLog and gamestate
+		handLog = new HandLog(gameLog.getTimestamp(), player.getBalance(), bet);
+		gamestate = new Gamestate();
+		
+		// Initialize new empty hands for player and dealer
+		player.addHand();
+		dealer.addHand();
+		
+		// Reset and shuffle deck
+		deck.reset();
+		deck.shuffle();
+		
+		// Deal first cards
+		player.addCard(deck.dealCard());
+		dealer.addCard(deck.dealCard()); // Dealer's first card is visible
+		
+		// Deal second cards
+		player.addCard(deck.dealCard());
+		dealer.setHiddenCard(deck.dealCard()); // Dealer's second card is hidden
+	}
+	
+	public void endGame() {
+		// Write later
 	}
 	
 	// Method to format player statistics similar to OutputHandler
@@ -170,10 +195,6 @@ public class ModelGUI {
 		return player;
 	}
 	
-	public Blackjack getBlackjack() {
-		return blackjack;
-	}
-	
 	public Dealer getDealer() {
 		return dealer;
 	}
@@ -188,6 +209,14 @@ public class ModelGUI {
 	
 	public String getHandStatistics() {
 		return handStatistics;
+	}
+	
+	public void setBet(double bet) {
+		this.bet = bet;
+	}
+	
+	public double getBet() {
+		return bet;
 	}
 	
 }

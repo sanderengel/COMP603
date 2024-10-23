@@ -2,25 +2,33 @@ package blackjack;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
+import javax.imageio.ImageIO;
 /**
  *
  * @author sanderengelthilo
  */
 public class ViewGUI {
     private final JFrame frame;
-	private final JPanel mainPanel, labelPanel, nameInputPanel, betInputPanel;
+	private final JPanel mainPanel, labelPanel, nameInputPanel, betInputPanel, playerCardPanel, dealerCardPanel;
     private JPanel actionPanel;
     private final JLabel firstLabel, secondLabel;
     private final JTextField nameInput, betInput;
-	private final JButton nameButton, viewRecordsButton, viewGamesButton, viewHandsButton, startPlayingButton, betButton;
+	private final JButton nameButton, viewRecordsButton, viewGamesButton, viewHandsButton, startPlayingButton, betButton, hitButton, standButton;
 	private final JTextArea textArea;
 	private final JScrollPane scrollPane;
 
     public ViewGUI() {
+		
+		// PREP
+		
         // Create the frame
         frame = new JFrame("Blackjack Game");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(550, 300);
 
 		// Create main panel with BorderLayout
@@ -58,6 +66,16 @@ public class ViewGUI {
 		
 		// Create start playing button for later		
 		startPlayingButton = new JButton("Start Playing");
+		
+		// Create hit and stand buttons for later
+		hitButton = new JButton("Hit");
+		standButton = new JButton("Stand");
+		
+		// Create cards panels
+		playerCardPanel = new JPanel(new FlowLayout());
+		dealerCardPanel = new JPanel(new FlowLayout());
+		
+		// INITIAL FRAME SETUP
 		
 		// Center-align the labels within the BoxLayout
         firstLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -207,7 +225,7 @@ public class ViewGUI {
 			// Remove second label text
 			labelPanel.remove(secondLabel);
 
-			// Create JTextArea with game statistics
+			// Create JTextArea with hand statistics
 			textArea.setText(HandsString);
 
 			// Add scrollPane if not done already
@@ -236,6 +254,11 @@ public class ViewGUI {
 			if (actionPanel != null) {
 				mainPanel.remove(actionPanel);
 			}
+			
+			// Remove scrollPane if it exists
+			if (scrollPane != null) {
+				mainPanel.remove(scrollPane);
+			}
 
 			// Update first label text
 			firstLabel.setText("How much would you like to bet?");
@@ -251,8 +274,80 @@ public class ViewGUI {
 			mainPanel.repaint();
 		});
 	}
+	
+	public void updateInvalidBet(String errorMessage) {
+		// Add and update second label text
+		labelPanel.add(secondLabel);
+		secondLabel.setText(errorMessage);
+		
+		// Refresh the frame to display the updated components
+		mainPanel.revalidate();
+		mainPanel.repaint();
+	}
+	
+	public void updateHand(String summaryString, String actionString) {
+		SwingUtilities.invokeLater(() -> {
+			// Remove actionPanel if it exists
+			if (actionPanel != null) {
+				mainPanel.remove(actionPanel);
+			}
+			
+			// Remove betInputPanel if it exists
+			if (betInputPanel != null && betInputPanel.getParent() != null) {
+				mainPanel.remove(betInputPanel);
+			}
 
-    // Getter methods for buttons to allow Controller to add functionality
+			// Update label text
+			firstLabel.setText(summaryString);
+			secondLabel.setText(actionString);
+			labelPanel.add(secondLabel);
+
+			mainPanel.add(playerCardPanel, BorderLayout.EAST);
+			mainPanel.add(dealerCardPanel, BorderLayout.WEST);
+
+			// Create new action panel with buttons
+			actionPanel = new JPanel(new FlowLayout());
+			actionPanel.add(hitButton);
+			actionPanel.add(standButton);
+
+			// Add the action panel to the main panel
+			mainPanel.add(actionPanel, BorderLayout.SOUTH);
+
+			// Refresh the frame to display the updated components
+			mainPanel.revalidate();
+			mainPanel.repaint();
+		});
+	}
+	
+	public void updateCards(JPanel cardPanel, List<String> cardImagePaths) {
+		// Clear previous cards
+		cardPanel.removeAll();
+		
+		// Add new cards
+		for (String cardImagePath : cardImagePaths) {
+			cardImagePath = "/cards/PNG-cards-1.3/test.txt"; // For bug fixing
+			URL resourceURL = getClass().getResource(cardImagePath);
+			System.out.println(resourceURL);
+			if (resourceURL == null) {
+				System.out.println("Resource not found: " + cardImagePath);
+			} else {
+				System.out.println("Resource found: " + cardImagePath);
+				ImageIcon cardIcon = new ImageIcon(resourceURL);
+				JLabel cardLabel = new JLabel(cardIcon);
+				cardPanel.add(cardLabel);
+			}
+		}
+		
+		// Refresh panel
+		cardPanel.revalidate();
+		cardPanel.repaint();
+	}
+
+    // Getter methods for frame and buttons to allow Controller to add functionality
+	public JFrame getFrame() {
+		return frame;
+	}
+	
     public JButton getNameButton() {
         return nameButton;
     }
@@ -279,6 +374,26 @@ public class ViewGUI {
 	
 	public JButton getBetButton() {
 		return betButton;
+	}
+	
+	public JTextField getBetInput() {
+		return betInput;
+	}
+	
+	public JButton getHitButton() {
+		return hitButton;
+	}
+	
+	public JButton getStandButton() {
+		return standButton;
+	}
+	
+	public JPanel getPlayerCardPanel() {
+		return playerCardPanel;
+	}
+	
+	public JPanel getDealerCardPanel() {
+		return dealerCardPanel;
 	}
 
 }

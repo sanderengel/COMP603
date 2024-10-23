@@ -13,16 +13,10 @@ public class Card {
 		this.suit = suit;
 	}
 
-	/**
-	 * @return the rank
-	 */
 	public String getRank() {
 		return rank;
 	}
 
-	/**
-	 * @return the suit
-	 */
 	public String getSuit() {
 		return suit;
 	}
@@ -39,6 +33,10 @@ public class Card {
 	
 	public boolean isAce() {
 		return rank.equals("A");
+	}
+	
+	public String toStringForImage() {
+		return rank + "-" + suit.charAt(0);
 	}
 	
 	@Override
