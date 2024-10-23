@@ -1,9 +1,5 @@
 package blackjack;
 
-/**
- *
- * @author sanderengelthilo
- */
 public class HandLog {
 	private final String gameTimestamp;
 	private final double balanceBeforeHand;

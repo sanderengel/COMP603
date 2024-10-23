@@ -4,10 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 import java.util.List;
-/**
- *
- * @author sanderengelthilo
- */
+
 public class ViewGUI {
     private final JFrame frame;
 	private final JPanel mainPanel, labelPanel, nameInputPanel, betInputPanel, playerCardPanel, dealerCardPanel, playerCardImagePanel, dealerCardImagePanel, gameOverPanel;

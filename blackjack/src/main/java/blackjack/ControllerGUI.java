@@ -10,10 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-/**
- *
- * @author sanderengelthilo
- */
+
 public class ControllerGUI {
     private final ModelGUI model;
     private final ViewGUI view;
@@ -254,7 +251,7 @@ public class ControllerGUI {
 				while (model.getDealer().getSum() < 17) {
 					
 					// Sleep to simulate a delay between each dealer hit
-					Thread.sleep(3000); // milliseconds
+					Thread.sleep(2000); // milliseconds
 					model.dealerHit();
 
 					// Use SwingUtilities.invokeLater to ensure that UI updates run on the EDT

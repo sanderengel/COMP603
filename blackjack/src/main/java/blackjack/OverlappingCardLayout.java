@@ -2,9 +2,6 @@ package blackjack;
 
 import java.awt.*;
 
-/**
- * Custom layout that overlaps cards, where newer cards partially cover the previous ones from left to right.
- */
 public class OverlappingCardLayout implements LayoutManager {
     private final int overlap;
 

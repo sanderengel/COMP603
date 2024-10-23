@@ -1,9 +1,5 @@
 package blackjack;
 
-/**
- *
- * @author sanderengelthilo
- */
 public class Card {
 	private final String rank;
 	private final String suit;

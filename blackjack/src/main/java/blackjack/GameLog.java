@@ -9,10 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-/**
- *
- * @author sanderengelthilo
- */
 public class GameLog {
 	private final String timestamp;
 	private final String playerName;

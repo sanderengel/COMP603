@@ -3,11 +3,6 @@ package blackjack;
 import java.util.Scanner;
 import java.util.Locale;
 
-/**
- *
- * @author sanderengelthilo
- * @author Jassel Doong
- */
 public class InputHandler {
 	private final Scanner scanner;
 	

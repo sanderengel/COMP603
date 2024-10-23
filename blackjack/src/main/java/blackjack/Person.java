@@ -1,9 +1,5 @@
 package blackjack;
 
-/**
- *
- * @author sanderengelthilo
- */
 public abstract class Person {
 	protected final String name;
 	protected Hand hand;

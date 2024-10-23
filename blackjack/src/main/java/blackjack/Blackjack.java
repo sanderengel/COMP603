@@ -3,10 +3,6 @@ package blackjack;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- *
- * @author sanderengelthilo
- */
 public class Blackjack {
 	Deck deck;
 	private Dealer dealer; // provided by Main

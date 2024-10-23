@@ -1,10 +1,7 @@
 package blackjack;
 
 import javax.swing.SwingUtilities;
-/**
- *
- * @author sanderengelthilo
- */
+
 public class MainGUI {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {

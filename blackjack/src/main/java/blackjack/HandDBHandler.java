@@ -7,10 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author sanderengelthilo
- */
 public class HandDBHandler {
 	
 	public static void insertHand(HandLog handLog) throws SQLException {

@@ -1,10 +1,5 @@
 package blackjack;
 
-/**
- *
- * @author Jassel Doong
- * @author Sander Thilo
- */
 public class Gamestate {
     
     // Instance variables

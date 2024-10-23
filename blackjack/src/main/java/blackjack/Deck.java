@@ -6,10 +6,7 @@ import java.util.List;
 import java.io.BufferedReader;
 import java.util.Collections;
 import java.io.InputStreamReader;
-/**
- *
- * @author sanderengelthilo
- */
+
 public class Deck {
 	// Initialize list of cards
 	private final List<Card> originalCards = new ArrayList<>(); // Original full list of cards

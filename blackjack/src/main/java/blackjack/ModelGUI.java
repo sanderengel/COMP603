@@ -5,10 +5,7 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-/**
- *
- * @author sanderengelthilo
- */
+
 public class ModelGUI {
 	private Player player;
 	private String playerName;

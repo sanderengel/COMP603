@@ -1,10 +1,5 @@
 package blackjack;
 
-/**
- *
- * @author jasseldoong
- * @author sanderengelthilo
- */
 public class Player extends Person {
 	private double balance;
 	private int gamesPlayed;

@@ -1,9 +1,5 @@
 package blackjack;
 
-/**
- *
- * @author jasseldoong
- */
 public class Dealer extends Person {
 	private Card hiddenCard;
 

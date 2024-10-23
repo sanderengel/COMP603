@@ -2,11 +2,6 @@ package blackjack;
 
 import java.util.List;
 
-/**
- *
- * @author Jassel Doong
- * @author Sander Thilo
- */
 public class OutputHandler {
 	public static void displaySum(Person person) { // Used for both player and dealer
 		System.out.println("Sum of " + person.getName() + "'s cards: " + person.getSum());

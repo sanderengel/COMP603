@@ -6,10 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-/**
- *
- * @author sanderengelthilo
- */
+
 public class GameDBHandler {
 		
 	// Method to insert only the timestamp
