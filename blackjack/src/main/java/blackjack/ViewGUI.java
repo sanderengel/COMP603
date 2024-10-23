@@ -325,7 +325,7 @@ public class ViewGUI {
 		
 		// Add new cards
 		for (String cardImagePath : cardImagePaths) {
-			cardImagePath = "/cards/PNG-cards-1.3/test.txt"; // For bug fixing
+			// cardImagePath = "/cards/PNG-cards-1.3/2-Ccopy.png"; // For bug fixing
 			URL resourceURL = getClass().getResource(cardImagePath);
 			System.out.println(resourceURL);
 			if (resourceURL == null) {
