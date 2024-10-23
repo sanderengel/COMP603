@@ -54,7 +54,7 @@ public class GameLog {
 	}
 	
 	public void updateHandsWon(double payoutMultiplier) {
-		if (payoutMultiplier > 0) {
+		if (payoutMultiplier > 0.0) {
 			this.numHandsWon++;
 		}
 	}

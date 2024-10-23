@@ -37,6 +37,14 @@ public abstract class Person {
 		return hand;
 	}
 	
+	public boolean has21() {
+		return (hand.getSum() == 21);
+	}
+	
+	public boolean hasNatural() {
+		return hand.getCards().size() == 2 && hand.getSum() == 21;
+	}
+	
 	@Override
 	public String toString() {
 		return name + "'s hand: " + hand;
@@ -45,6 +53,7 @@ public abstract class Person {
 	// Abstract player specific methods
 	public abstract void adjustBalance(double bet, double payoutMultiplier);
 	public abstract double getBalance();
+	public abstract boolean outOfMoney();
 	public abstract void incrementGamesPlayed();
 	public abstract int getGamesPlayed();
 	public abstract void incrementHandsPlayed();

@@ -2,22 +2,18 @@ package blackjack;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
-import javax.imageio.ImageIO;
 /**
  *
  * @author sanderengelthilo
  */
 public class ViewGUI {
     private final JFrame frame;
-	private final JPanel mainPanel, labelPanel, nameInputPanel, betInputPanel, playerCardPanel, dealerCardPanel, playerCardImagePanel, dealerCardImagePanel;
+	private final JPanel mainPanel, labelPanel, nameInputPanel, betInputPanel, playerCardPanel, dealerCardPanel, playerCardImagePanel, dealerCardImagePanel, gameOverPanel;
     private JPanel actionPanel;
-    private final JLabel firstLabel, secondLabel;
-    private final JTextField nameInput, betInput, playerTextTop, playerTextBottom, dealerTextTop, dealerTextBottom, gameOverText;
+    private final JLabel firstLabel, secondLabel, gameOverText;
+    private final JTextField nameInput, betInput, playerTextTop, playerTextBottom, dealerTextTop, dealerTextBottom;
 	private final JButton nameButton, viewRecordsButton, viewGamesButton, viewHandsButton, startPlayingButton, playAgainButton, betButton, hitButton, standButton;
 	private final JTextArea textArea;
 	private final JScrollPane scrollPane;
@@ -29,8 +25,7 @@ public class ViewGUI {
 		
         // Create the frame
         frame = new JFrame("Blackjack Game");
-        // frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(550, 300);
+        frame.setSize(600, 300);
 
 		// Create main panel with BorderLayout
         mainPanel = new JPanel(new BorderLayout());
@@ -50,6 +45,10 @@ public class ViewGUI {
         secondLabel = new JLabel("What is your name?");
 		nameInput = new JTextField(10);
         nameButton = new JButton("Enter");
+		
+		// Center-align the labels within the BoxLayout
+        firstLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        secondLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		// Create JTextArea with player statistics
 		textArea = new JTextArea(10, 10);
@@ -73,6 +72,10 @@ public class ViewGUI {
 		hitButton = new JButton("Hit");
 		standButton = new JButton("Stand");
 		
+		// Define card dimensions
+		cardWidth = 80;
+		cardHeight = 120;
+		
 		// Create cards panels
 		playerCardPanel = new JPanel();
 		playerCardPanel.setLayout(new BoxLayout(playerCardPanel, BoxLayout.Y_AXIS));
@@ -80,17 +83,24 @@ public class ViewGUI {
 		dealerCardPanel.setLayout(new BoxLayout(dealerCardPanel, BoxLayout.Y_AXIS));
 		
 		// Create card image panels
-		playerCardImagePanel = new JPanel(new OverlappingCardLayout());
-		dealerCardImagePanel = new JPanel(new OverlappingCardLayout());
+		playerCardImagePanel = new JPanel(new OverlappingCardLayout(cardWidth/2));
+		dealerCardImagePanel = new JPanel(new OverlappingCardLayout(cardWidth/2));
 		
-		// Create text fields for above and below the cards, make them read-only
-		playerTextTop = new JTextField("Player's Cards", 15); // Top text field for player
-		playerTextBottom = new JTextField("", 15); // Bottom text field for player
-		dealerTextTop = new JTextField("Dealer's Cards", 15); // Top text field for dealer
-		dealerTextBottom = new JTextField("", 15); // Bottom text field for dealer
+		// Create labels for above and below the cards
+		playerTextTop = new JTextField("Player's Cards");
+		playerTextTop.setPreferredSize(new Dimension(200, 30));
 		playerTextTop.setEditable(false);
+
+		playerTextBottom = new JTextField();
+		playerTextBottom.setPreferredSize(new Dimension(200, 30));
 		playerTextBottom.setEditable(false);
+
+		dealerTextTop = new JTextField("Dealer's Cards");
+		dealerTextTop.setPreferredSize(new Dimension(200, 30));
 		dealerTextTop.setEditable(false);
+
+		dealerTextBottom = new JTextField();
+		dealerTextBottom.setPreferredSize(new Dimension(200, 30));
 		dealerTextBottom.setEditable(false);
 		
 		// Add components to card panels
@@ -101,19 +111,12 @@ public class ViewGUI {
 		dealerCardPanel.add(dealerCardImagePanel);
 		dealerCardPanel.add(dealerTextBottom);
 		
-		// Define card dimensions
-		cardWidth = 60;
-		cardHeight = 90;
-		
-		// Create text field for when player is out of money
-		gameOverText = new JTextField("Sorry, you are out of money. Game over.");
-		gameOverText.setEditable(false);
+		// Create panel with text field for when player is out of money
+		gameOverText = new JLabel("Sorry, you are out of money. Game over.");
+		gameOverPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        gameOverPanel.add(gameOverText);
 		
 		// INITIAL FRAME SETUP
-		
-		// Center-align the labels within the BoxLayout
-        firstLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        secondLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		// Add labels to labelPanel
 		labelPanel.add(firstLabel);
@@ -137,18 +140,12 @@ public class ViewGUI {
     }
 
     // Method to update the panel for new/returning players
-    public void updatePlayerStatus(boolean isNewPlayer, double balance) {
+    public void updatePlayerStatus(String firstLabelText, String secondLabelText, boolean isNewPlayer) {
         // Remove inputPanel after player enters their name
 		mainPanel.remove(nameInputPanel);
 
-        // Message for new or returning players
-        if (isNewPlayer) {
-            firstLabel.setText("We see this is your first time here!");
-			secondLabel.setText("You start with a balance of $" + balance + ".");
-        } else {
-            firstLabel.setText("Welcome back!");
-			secondLabel.setText("Your current balance with us is $" + balance + ".");
-        }
+        firstLabel.setText(firstLabelText);
+		secondLabel.setText(secondLabelText);
 
 		// Create action panel for buttons
         actionPanel = new JPanel(new FlowLayout());
@@ -179,11 +176,9 @@ public class ViewGUI {
 				mainPanel.remove(actionPanel);
 			}
 
-			// Update first label text
+			// Update label text
 			firstLabel.setText("Your records with us are as follows:");
-
-			// Remove second label text
-			labelPanel.remove(secondLabel);
+			secondLabel.setText("");
 
 			// Update textArea
 			textArea.setText(RecordsString);
@@ -216,11 +211,9 @@ public class ViewGUI {
 				mainPanel.remove(actionPanel);
 			}
 
-			// Update first label text
+			// Update label text
 			firstLabel.setText("You have played the following games:");
-
-			// Remove second label text
-			labelPanel.remove(secondLabel);
+			secondLabel.setText("");
 
 			// Create JTextArea with game statistics
 			textArea.setText(GamesString);
@@ -255,9 +248,7 @@ public class ViewGUI {
 
 			// Update first label text
 			firstLabel.setText("You have played the following hands:");
-
-			// Remove second label text
-			labelPanel.remove(secondLabel);
+			secondLabel.setText("");
 
 			// Create JTextArea with hand statistics
 			textArea.setText(HandsString);
@@ -304,9 +295,7 @@ public class ViewGUI {
 
 			// Update first label text
 			firstLabel.setText("How much would you like to bet?");
-
-			// Remove second label text
-			labelPanel.remove(secondLabel);
+			secondLabel.setText("");
 
 			// Add betInputPanel to main
 			mainPanel.add(betInputPanel, BorderLayout.CENTER);
@@ -318,8 +307,7 @@ public class ViewGUI {
 	}
 	
 	public void updateInvalidBet(String errorMessage) {
-		// Add and update second label text
-		labelPanel.add(secondLabel);
+		// Update second label text
 		secondLabel.setText(errorMessage);
 		
 		// Refresh the frame to display the updated components
@@ -341,12 +329,7 @@ public class ViewGUI {
 
 			// Update label text
 			firstLabel.setText("Hit or Stand?");
-			
-			// Add text fields to card panels
-			playerCardPanel.add(playerTextTop, BorderLayout.NORTH);
-			playerCardPanel.add(playerTextBottom, BorderLayout.SOUTH);
-			dealerCardPanel.add(dealerTextTop, BorderLayout.NORTH);
-			dealerCardPanel.add(dealerTextBottom, BorderLayout.SOUTH);
+			secondLabel.setText("");
 			
 			// Add card panels to main panel
 			mainPanel.add(playerCardPanel, BorderLayout.EAST);
@@ -359,6 +342,23 @@ public class ViewGUI {
 
 			// Add the action panel to the main panel
 			mainPanel.add(actionPanel, BorderLayout.SOUTH);
+
+			// Refresh the frame to display the updated components
+			mainPanel.revalidate();
+			mainPanel.repaint();
+		});
+	}
+	
+	public void updateDealersTurn() {
+		SwingUtilities.invokeLater(() -> {
+			// Remove actionPanel if it exists
+			if (actionPanel != null) {
+				mainPanel.remove(actionPanel);
+			}
+
+			// Update label text
+			firstLabel.setText("Stood. Dealer's turn...");
+			secondLabel.setText("");
 
 			// Refresh the frame to display the updated components
 			mainPanel.revalidate();
@@ -394,14 +394,8 @@ public class ViewGUI {
 			
 		});
 	}
-	
-	public void updateSumText(JTextField textBottomField, String sumText) {
-		textBottomField.setText(sumText);
-		textBottomField.revalidate();
-		textBottomField.repaint();
-	}
 
-	public void endHand(String topText, boolean outOfMoney) {
+	public void endHand(String firstLabelText, String secondLabelText, boolean outOfMoney) {
 		SwingUtilities.invokeLater(() -> {
 			// Remove actionPanel if it exists
 			if (actionPanel != null) {
@@ -409,11 +403,11 @@ public class ViewGUI {
 			}
 
 			// Update label text
-			firstLabel.setText(topText);
+			firstLabel.setText(firstLabelText);
+			secondLabel.setText(secondLabelText);
 
 			if (outOfMoney) {
-				gameOverText.setAlignmentX(Component.CENTER_ALIGNMENT);
-				mainPanel.add(gameOverText, BorderLayout.SOUTH);
+				mainPanel.add(gameOverPanel, BorderLayout.SOUTH);
 			} else {
 				// Create new action panel with button
 				actionPanel = new JPanel(new FlowLayout());
@@ -429,9 +423,14 @@ public class ViewGUI {
 		});
 	}
 
+
     // Getter methods for frame and buttons to allow Controller to add functionality
 	public JFrame getFrame() {
 		return frame;
+	}
+	
+	public JLabel getFirstLabel() {
+		return firstLabel;
 	}
 	
     public JButton getNameButton() {
@@ -477,14 +476,6 @@ public class ViewGUI {
 	public JButton getStandButton() {
 		return standButton;
 	}
-	
-//	public JPanel getPlayerCardPanel() {
-//		return playerCardPanel;
-//	}
-//	
-//	public JPanel getDealerCardPanel() {
-//		return dealerCardPanel;
-//	}
 	
 	public JPanel getPlayerCardImagePanel() {
 		return playerCardImagePanel;

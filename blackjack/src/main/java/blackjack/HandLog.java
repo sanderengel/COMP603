@@ -55,6 +55,39 @@ public class HandLog {
 		this.balanceAfterHand = player.getBalance();
 	}
 	
+	// Setters for all variables
+	public void setResult(String result) {
+		this.result = result;
+	}
+
+	public void setPlayerHand(String playerHand) {
+		this.playerHand = playerHand;
+	}
+
+	public void setDealerHand(String dealerHand) {
+		this.dealerHand = dealerHand;
+	}
+
+	public void setPlayerHandSum(int playerHandSum) {
+		this.playerHandSum = playerHandSum;
+	}
+
+	public void setDealerHandSum(int dealerHandSum) {
+		this.dealerHandSum = dealerHandSum;
+	}
+
+	public void setPlayerNatural(boolean playerNatural) {
+		this.playerNatural = playerNatural;
+	}
+
+	public void setDealerNatural(boolean dealerNatural) {
+		this.dealerNatural = dealerNatural;
+	}
+
+	public void setBalanceAfterHand(double balanceAfterHand) {
+		this.balanceAfterHand = balanceAfterHand;
+	}
+	
 	// Getters for all variables
 	public String getGameTimestamp() {
 		return gameTimestamp;

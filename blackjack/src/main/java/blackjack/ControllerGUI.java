@@ -1,7 +1,6 @@
 package blackjack;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
@@ -9,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 /**
  *
  * @author sanderengelthilo
@@ -20,12 +21,21 @@ public class ControllerGUI {
     public ControllerGUI(ModelGUI model, ViewGUI view) {
         this.model = model;
         this.view = view;
-		
+		AddListeners();
+    }
+	
+	private void AddListeners() {
 		// Add WindowListener to execute code after window is closed
         view.getFrame().addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                endGame();
+				try {
+					endGame();
+				} catch (SQLException ex) {
+					Logger.getLogger(ControllerGUI.class.getName()).log(Level.SEVERE, null, ex);
+				} finally {
+					System.exit(0); // Close program
+				}
             }
         });
 
@@ -41,11 +51,7 @@ public class ControllerGUI {
 			}
 		});
 		view.getPlayAgainButton().addActionListener((ActionEvent e) -> {
-			try {
-				handleStartPlaying();
-			} catch (SQLException ex) {
-				Logger.getLogger(ControllerGUI.class.getName()).log(Level.SEVERE, null, ex);
-			}
+			handlePlayAgain();
 		});
 		view.getViewRecordsButton().addActionListener((ActionEvent e) -> {
 			handleViewRecords();
@@ -57,16 +63,23 @@ public class ControllerGUI {
 			handleViewHands();
 		});
 		view.getBetButton().addActionListener((ActionEvent e) -> {
-			handleBet();
+			try {
+				handleBet();
+			} catch (SQLException ex) {
+				Logger.getLogger(ControllerGUI.class.getName()).log(Level.SEVERE, null, ex);
+			}
 		});
 		view.getHitButton().addActionListener((ActionEvent e) -> {
-			handleHit();
+			try {
+				handleHit();
+			} catch (SQLException ex) {
+				Logger.getLogger(ControllerGUI.class.getName()).log(Level.SEVERE, null, ex);
+			}
 		});
 		view.getStandButton().addActionListener((ActionEvent e) -> {
 			handleStand();
 		});
-		
-    }
+	}
 
     // Method to handle name input and check if it's a new player
     private void handleNameInput() {
@@ -79,10 +92,21 @@ public class ControllerGUI {
         }
 
 		// Register player to model
-		model.registerPlayer(playerName);
+		model.registerPlayer(playerName); 
+		
+		// Message for new or returning players
+		String firstLabelText;
+		String secondLabelText;
+        if (model.isNewPlayer()) {
+            firstLabelText = "We see this is your first time here!";
+			secondLabelText = "You start with a balance of $" + model.toIntIfPossible(model.getPlayer().getBalance()) + ".";
+        } else {
+            firstLabelText = "Welcome back!";
+			secondLabelText = "Your current balance with us is $" + model.toIntIfPossible(model.getPlayer().getBalance()) + ".";
+        }
 		
 		// Update GUI
-		view.updatePlayerStatus(model.isNewPlayer(), model.getPlayer().getBalance());
+		view.updatePlayerStatus(firstLabelText, secondLabelText, model.isNewPlayer());
 		
     }
 	
@@ -101,10 +125,17 @@ public class ControllerGUI {
 	private void handleStartPlaying() throws SQLException {
 		// Start game
 		model.startGame();
+		
+		// Ask for bet
 		view.updateGetBet();
 	}
 	
-	private void handleBet() {
+	private void handlePlayAgain() {
+		// Ask for bet
+		view.updateGetBet();
+	}
+	
+	private void handleBet() throws SQLException {
 		double betAmount = 0.0;
 		
 		// Get bet from the input field
@@ -124,7 +155,7 @@ public class ControllerGUI {
 		
 		// Check bet does not exceed balance
 		if (betAmount > model.getPlayer().getBalance()) {
-			invalidBet("Please enter a bet that does not exceed your balance of $" + model.getPlayer().getBalance() + ".");
+			invalidBet("Please enter a bet that does not exceed your balance of $" + model.toIntIfPossible(model.getPlayer().getBalance()) + ".");
 			return;
 		}
 		
@@ -137,11 +168,10 @@ public class ControllerGUI {
 		view.updateInvalidBet(errorMessage);
 	}
 	
-	private void playHand(double bet) {
+	private void playHand(double bet) throws SQLException {
 		
-		// Set bet and deal hand in model
-		model.setBet(bet);
-		model.dealHand();
+		// Set bet and start hand in model
+		model.startHand(bet);
 		
 		// Update view to show blackjack playing interface
 		view.updateHand();
@@ -150,11 +180,8 @@ public class ControllerGUI {
 		updateCards(true); // Update with hidden card
 		
 		// Check for natural win/loss
-		String resultText = model.getResultText();
-		if (resultText != null) {
-			// resultText has been filled already, must be natural
-			System.out.println(resultText);
-			endHand(resultText, (model.getPlayer().getBalance() <= 0));
+		if (model.checkNaturals()) {
+			endHand();
 		}
 		
 	}
@@ -180,47 +207,90 @@ public class ControllerGUI {
 			dealerCardImagePaths.add(cardImagePath + "card-back.png"); // Add second card (hidden)
 		} else {
 			for (Card card : dealerCards) {
-			dealerCardImagePaths.add(card.toStringForImage());
+				dealerCardImagePaths.add(cardImagePath + card.toStringForImage() + ".png"); // Add all cards (visible)
 			}
 		}
 			
 		// Update view
 		view.updateCards(view.getPlayerCardImagePanel(), playerCardImagePaths);
 		view.updateCards(view.getDealerCardImagePanel(), dealerCardImagePaths);
-		view.updateSumText(view.getPlayerTextBottom(), "Sum of cards: " + model.getPlayer().getSum());
+		view.getPlayerTextBottom().setText("Sum of cards: " + model.getPlayer().getSum());
 		if (hiddenCard) {
 			int dealerFirstCardValue = model.getDealer().getHand().getCards().get(0).getValue();
-			view.updateSumText(view.getDealerTextBottom(), "Value of visible card: " + dealerFirstCardValue);
+			view.getDealerTextBottom().setText("Value of visible card: " + dealerFirstCardValue);
 		} else {
-			view.updateSumText(view.getPlayerTextBottom(), "Sum of cards: " + model.getPlayer().getSum());
+			view.getDealerTextBottom().setText("Sum of cards: " + model.getDealer().getSum());
 		}
 		
 	}
 	
-	private void handleHit() {
-		model.hit();
+	private void handleHit() throws SQLException {
+		model.playerHit();
 		
 		// Update cards
 		updateCards(true);
 		
 		// Check if player is bust
 		if (model.getPlayer().isBust()) {
-			endHand(model.getResultText(), (model.getPlayer().getBalance() > 0));
+			endHand();
+		}
+		
+		// Check if player has 21, automatically stand
+		else if (model.getPlayer().has21()) {
+			handleStand();
 		}
 	}
 	
 	private void handleStand() {
-		// Write method
+		// Update cards to show hidden card and initial dealer state
+		updateCards(false);
+		view.updateDealersTurn();
+
+		// Run dealer's turn logic in a background thread to avoid blocking the EDT
+		SwingWorker<Void, Void> worker = new SwingWorker<>() {
+			@Override
+			protected Void doInBackground() throws Exception {
+				// Dealer's turn logic, including hitting while dealer sum is less than 17
+				while (model.getDealer().getSum() < 17) {
+					
+					// Sleep to simulate a delay between each dealer hit
+					Thread.sleep(3000); // milliseconds
+					model.dealerHit();
+
+					// Use SwingUtilities.invokeLater to ensure that UI updates run on the EDT
+					SwingUtilities.invokeLater(() -> updateCards(false));
+					SwingUtilities.invokeLater(() -> view.getFirstLabel().setText("Dealer hitting..."));
+				}
+				return null;
+			}
+
+			@Override
+			protected void done() {
+				SwingUtilities.invokeLater(() -> view.getFirstLabel().setText("Dealer stands."));
+				model.determineWinner();
+				try {
+					endHand();
+				} catch (SQLException ex) {
+					Logger.getLogger(ControllerGUI.class.getName()).log(Level.SEVERE, null, ex);
+				}
+			}
+		};
+
+		// Execute the worker in a background thread
+		worker.execute();
 	}
+
 	
-	private void endHand(String topText, boolean outOfMoney) {
-		view.endHand(topText, outOfMoney);
+	private void endHand() throws SQLException {
+		model.endHand();
+		view.endHand(model.getResultText(), 
+					"Your balance is now $" + model.toIntIfPossible(model.getPlayer().getBalance()) + ".", 
+					(model.getPlayer().outOfMoney()));
 	}
 	
 	// Save information to logs and DB and close program
-	private void endGame() {
+	private void endGame() throws SQLException {
 		model.endGame();
-		System.exit(0);
 	}
 }
 

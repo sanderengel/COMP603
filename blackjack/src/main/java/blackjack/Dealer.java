@@ -23,7 +23,7 @@ public class Dealer extends Person {
         
         public Card getVisibleCard() {
         // Ensure the hand is not null and has at least one card
-        if (hand != null && hand.getCards().size() > 0) {
+        if (hand != null && !hand.getCards().isEmpty()) {
             return hand.getCards().get(0); // Assuming the first card is the visible one
             }
             return null; // Return null if there are no cards
@@ -46,6 +46,11 @@ public class Dealer extends Person {
 	@Override
 	public double getBalance() {
 		return 0.0;
+	}
+	
+	@Override
+	public boolean outOfMoney() {
+		return true; // Dealer never has money
 	}
 	
 	@Override

@@ -24,14 +24,13 @@ public class ModelGUI {
 	private List<HandLog> hands;
 	private HandLog handLog; // Will continuously update every hand
 	private double bet;
-	private boolean playerNatural;
-	private boolean dealerNatural;
-	private Double payoutMultiplier; // Can be null
+	private double payoutMultiplier;
 	private String resultText;
 	
 	public ModelGUI() {
 		dealer = new Dealer();
 		defaultStartingBalance = 1000.0;
+		payoutMultiplier = 0.0;
 		
 		// Connect to DB
 		DBHandler.initializeDB();
@@ -96,13 +95,14 @@ public class ModelGUI {
 		return deck;
 	}
 	
-	public void dealHand() {
-		// Increment player's number of hands played
-		player.incrementHandsPlayed();
-		
-		// Initialize new handLog and gamestate
-		handLog = new HandLog(gameLog.getTimestamp(), player.getBalance(), bet);
-		
+	public void startHand(double bet) {
+		this.bet = bet;
+		player.incrementHandsPlayed(); // Increment player's number of hands played
+		handLog = new HandLog(gameLog.getTimestamp(), player.getBalance(), bet); // Initialize new handLog
+		dealCards(); // Deal cards
+	}
+	
+	private void dealCards() {
 		// Initialize new empty hands for player and dealer
 		player.addHand();
 		dealer.addHand();
@@ -118,56 +118,119 @@ public class ModelGUI {
 		// Deal second cards
 		player.addCard(deck.dealCard());
 		dealer.setHiddenCard(deck.dealCard()); // Dealer's second card is hidden
-		
-		// Check for naturals
-		playerNatural = (player.getSum() == 21);
-		dealerNatural = (dealer.getSum() == 21);
-
-		// Cross check for naturals
-		if (playerNatural) {
-			if (dealerNatural) {
-				// Both player and dealer have naturals
-				resultText = "Both " + player.getName() + " and " + dealer.getName() + " have naturals, it is a tie!";
-				payoutMultiplier = 0.0;
-			} else {
-				// Only player has natural
-				resultText = player.getName() + " has a natural win!";
-				payoutMultiplier = 1.5;
-				player.updateHandsWon(payoutMultiplier);
-			}
-		} else if (dealerNatural) {
-			// Only dealer has natural
-			resultText = dealer.getName() + " has a natural win...";
-			payoutMultiplier = -1.0;
-		} else {
-			// No one has a natural
-			resultText = null;
-			payoutMultiplier = null;
-		}
 	}
 	
-	public void hit() {
+	public boolean checkNaturals() {
+		
+		// Cross check for naturals
+		if (player.hasNatural()) {
+			if (dealer.hasNatural()) {
+				// Both player and dealer have naturals
+				payoutMultiplier = 0.0;
+				resultText = "Both you and " + player.getName() + " have naturals, it is a tie!";
+			} else {
+				// Only player has natural
+				payoutMultiplier = 1.5;
+				resultText = "You have a natural win!";
+			}
+		} else if (dealer.hasNatural()) {
+			// Only dealer has natural
+			payoutMultiplier = -1.0;
+			resultText = dealer.getName() + " has a natural win...";
+		} else {
+			// No one has natural
+			resultText = null;
+			payoutMultiplier = 0.0;
+			return false;
+		}
+		return true;
+	}
+	
+	public void playerHit() {
 		// Deal new card to player
 		player.addCard(deck.dealCard());
 		
 		// Check if player is bust
 		if (player.isBust()) {
 			payoutMultiplier = -1.0;
-			player.adjustBalance(bet, payoutMultiplier);
-			resultText = "Bust... Your balance is now $" + player.getBalance() + ".";
+			resultText = "You bust...";
 		}
 	}
 	
+	public void dealerHit() {
+		dealer.addCard(deck.dealCard());
+	}
 	
-	public void endGame() {
-		// Write later
+	public void determineWinner() {
+		// Dealer busts
+		if (dealer.isBust()) {
+			payoutMultiplier = 1.0;
+			resultText = dealer.getName() + " busts, you win!";
+		}
+		// Player's sum is higher than dealer's
+		else if (player.getSum() > dealer.getSum()) {
+			payoutMultiplier = 1.0;
+			resultText = "Your sum is higher than " + dealer.getName() + "'s, you win!";
+		}
+		// Player's sum is lower than dealer's
+		else if (player.getSum() < dealer.getSum()) {
+			payoutMultiplier = -1.0;
+			resultText = dealer.getName() + "'s sum is higher than yours, you lose...";
+		}
+		// Same sum
+		else {
+			payoutMultiplier = 0.0;
+			resultText = dealer.getName() + "'s sum and yours are equal, it's a draw.";
+		}
+	}
+	
+	public void endHand() throws SQLException {
+		// Update player's balance
+		player.adjustBalance(bet, payoutMultiplier);
+		
+		// Increment player's amount hands won if player won
+		player.updateHandsWon(payoutMultiplier);
+		
+		// Update number of won hands in game log
+		gameLog.updateHandsWon(payoutMultiplier);
+		
+		// Handle hand log
+		fillHandLog();
+		hands.add(handLog); // Append hand log to list of played hands
+		HandDBHandler.insertHand(handLog); // Save hand log to DB
+	}
+	
+	public void fillHandLog() {
+		handLog.setResult(resultText);
+		handLog.setPlayerHand(player.getHand().toString());
+		handLog.setDealerHand(dealer.getHand().toString());
+		handLog.setPlayerHandSum(player.getSum());
+		handLog.setDealerHandSum(dealer.getSum());
+		handLog.setPlayerNatural(player.hasNatural());
+		handLog.setDealerNatural(player.hasNatural());
+		handLog.setBalanceAfterHand(player.getBalance());
+	}
+	
+	public void endGame() throws SQLException {
+		// Save hand list and ending balance to game log
+		gameLog.setHands(hands);
+		gameLog.setEndingBalance(player.getBalance());
+
+		// Save game log to .txt
+		gameLog.saveGameLog();
+
+		// Update player information
+		PlayerDBHandler.addOrUpdatePlayer(player);
+
+		// Update game log to DB
+		GameDBHandler.updateGame(gameLog);
 	}
 	
 	// Method to format player statistics similar to OutputHandler
 	private String formatPlayerStatistics() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Name: ").append(player.getName()).append("\n");
-		sb.append("Current balance: $").append(startingBalance).append("\n");
+		sb.append("Current balance: $").append(toIntIfPossible(startingBalance)).append("\n");
 		sb.append("Total games played: ").append(player.getGamesPlayed()).append("\n");
 		sb.append("Total hands played: ").append(player.getHandsPlayed()).append("\n");
 		sb.append("Total hands won: ").append(player.getHandsWon()).append("\n");
@@ -190,10 +253,10 @@ public class ModelGUI {
 			GameLog gameLog = gameLogs.get(i);
 			sb.append("Game number: ").append(i + 1).append("\n");
 			sb.append("Timestamp: ").append(gameLog.getTimestamp()).append("\n");
-			sb.append("Starting balance: $").append(gameLog.getStartingBalance()).append("\n");
+			sb.append("Starting balance: $").append(toIntIfPossible(gameLog.getStartingBalance())).append("\n");
 			sb.append("Number of hands played: ").append(gameLog.getNumHands()).append("\n");
 			sb.append("Number of hands won: ").append(gameLog.getNumHandsWon()).append("\n");
-			sb.append("Ending balance: $").append(gameLog.getEndingBalance()).append("\n");
+			sb.append("Ending balance: $").append(toIntIfPossible(gameLog.getEndingBalance())).append("\n");
 			sb.append("\n"); // Add a blank line between game logs
 		}
 
@@ -215,7 +278,7 @@ public class ModelGUI {
 			HandLog handLog = handLogs.get(i);
 			sb.append("Hand number: ").append(i + 1).append("\n");
 			sb.append("Game timestamp: ").append(handLog.getGameTimestamp()).append("\n");
-			sb.append("Balance before hand: $").append(handLog.getBalanceBeforeHand()).append("\n");
+			sb.append("Balance before hand: $").append(toIntIfPossible(handLog.getBalanceBeforeHand())).append("\n");
 			sb.append("Result: ").append(handLog.getResult()).append("\n");
 			sb.append("Player's hand: ").append(handLog.getPlayerHand()).append("\n");
 			sb.append("Dealer's hand: ").append(handLog.getDealerHand()).append("\n");
@@ -223,11 +286,19 @@ public class ModelGUI {
 			sb.append("Sum of dealer's hand: ").append(handLog.getDealerHandSum()).append("\n");
 			sb.append("Player had natural: ").append(handLog.isPlayerNatural()).append("\n");
 			sb.append("Dealer had natural: ").append(handLog.isDealerNatural()).append("\n");
-			sb.append("Balance after hand: $").append(handLog.getBalanceAfterHand()).append("\n");
+			sb.append("Balance after hand: $").append(toIntIfPossible(handLog.getBalanceAfterHand())).append("\n");
 			sb.append("\n"); // Add a blank line between hand logs
 		}
 
 		return sb.toString();
+	}
+	
+	public Number toIntIfPossible(double value) {
+		if (value == (int) value) {
+			return (int) value; // Return as int if double value is equivalent to an integer
+		} else {
+			return value; // Otherwise, return double as it is
+		}
 	}
 	
 	public boolean isNewPlayer() {
@@ -254,15 +325,11 @@ public class ModelGUI {
 		return handStatistics;
 	}
 	
-	public void setBet(double bet) {
-		this.bet = bet;
-	}
-	
 	public double getBet() {
 		return bet;
 	}
 	
-	public Double getPayoutMultipler() {
+	public double getPayoutMultipler() {
 		return payoutMultiplier;
 	}
 	

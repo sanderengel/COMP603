@@ -30,6 +30,11 @@ public class Player extends Person {
 	}
 	
 	@Override
+	public boolean outOfMoney() {
+		return balance <= 0;
+	}
+	
+	@Override
 	public void incrementGamesPlayed() {
 		this.gamesPlayed++;
 	}
@@ -51,7 +56,7 @@ public class Player extends Person {
 	
 	@Override
 	public void updateHandsWon(double payoutMultiplier) {
-		if (payoutMultiplier > 0) {
+		if (payoutMultiplier > 0.0) {
 			this.handsWon++;
 		}
 	}
