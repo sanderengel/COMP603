@@ -14,13 +14,14 @@ import javax.imageio.ImageIO;
  */
 public class ViewGUI {
     private final JFrame frame;
-	private final JPanel mainPanel, labelPanel, nameInputPanel, betInputPanel, playerCardPanel, dealerCardPanel;
+	private final JPanel mainPanel, labelPanel, nameInputPanel, betInputPanel, playerCardPanel, dealerCardPanel, playerCardImagePanel, dealerCardImagePanel;
     private JPanel actionPanel;
     private final JLabel firstLabel, secondLabel;
-    private final JTextField nameInput, betInput;
-	private final JButton nameButton, viewRecordsButton, viewGamesButton, viewHandsButton, startPlayingButton, betButton, hitButton, standButton;
+    private final JTextField nameInput, betInput, playerTextTop, playerTextBottom, dealerTextTop, dealerTextBottom, gameOverText;
+	private final JButton nameButton, viewRecordsButton, viewGamesButton, viewHandsButton, startPlayingButton, playAgainButton, betButton, hitButton, standButton;
 	private final JTextArea textArea;
 	private final JScrollPane scrollPane;
+	private final int cardWidth, cardHeight;
 
     public ViewGUI() {
 		
@@ -64,16 +65,49 @@ public class ViewGUI {
 		betInput = new JTextField(10);
 		betButton = new JButton("Bet");
 		
-		// Create start playing button for later		
+		// Create start playing and play again buttons for later		
 		startPlayingButton = new JButton("Start Playing");
+		playAgainButton = new JButton("Play Again");
 		
 		// Create hit and stand buttons for later
 		hitButton = new JButton("Hit");
 		standButton = new JButton("Stand");
 		
 		// Create cards panels
-		playerCardPanel = new JPanel(new FlowLayout());
-		dealerCardPanel = new JPanel(new FlowLayout());
+		playerCardPanel = new JPanel();
+		playerCardPanel.setLayout(new BoxLayout(playerCardPanel, BoxLayout.Y_AXIS));
+		dealerCardPanel = new JPanel();
+		dealerCardPanel.setLayout(new BoxLayout(dealerCardPanel, BoxLayout.Y_AXIS));
+		
+		// Create card image panels
+		playerCardImagePanel = new JPanel(new OverlappingCardLayout());
+		dealerCardImagePanel = new JPanel(new OverlappingCardLayout());
+		
+		// Create text fields for above and below the cards, make them read-only
+		playerTextTop = new JTextField("Player's Cards", 15); // Top text field for player
+		playerTextBottom = new JTextField("", 15); // Bottom text field for player
+		dealerTextTop = new JTextField("Dealer's Cards", 15); // Top text field for dealer
+		dealerTextBottom = new JTextField("", 15); // Bottom text field for dealer
+		playerTextTop.setEditable(false);
+		playerTextBottom.setEditable(false);
+		dealerTextTop.setEditable(false);
+		dealerTextBottom.setEditable(false);
+		
+		// Add components to card panels
+		playerCardPanel.add(playerTextTop);
+		playerCardPanel.add(playerCardImagePanel);
+		playerCardPanel.add(playerTextBottom);
+		dealerCardPanel.add(dealerTextTop);
+		dealerCardPanel.add(dealerCardImagePanel);
+		dealerCardPanel.add(dealerTextBottom);
+		
+		// Define card dimensions
+		cardWidth = 60;
+		cardHeight = 90;
+		
+		// Create text field for when player is out of money
+		gameOverText = new JTextField("Sorry, you are out of money. Game over.");
+		gameOverText.setEditable(false);
 		
 		// INITIAL FRAME SETUP
 		
@@ -259,6 +293,14 @@ public class ViewGUI {
 			if (scrollPane != null) {
 				mainPanel.remove(scrollPane);
 			}
+			
+			// Remove card panels if they exist
+			if (playerCardPanel != null) {
+				mainPanel.remove(playerCardPanel);
+			}
+			if (dealerCardPanel != null) {
+				mainPanel.remove(dealerCardPanel);
+			}
 
 			// Update first label text
 			firstLabel.setText("How much would you like to bet?");
@@ -285,7 +327,7 @@ public class ViewGUI {
 		mainPanel.repaint();
 	}
 	
-	public void updateHand(String summaryString, String actionString) {
+	public void updateHand() {
 		SwingUtilities.invokeLater(() -> {
 			// Remove actionPanel if it exists
 			if (actionPanel != null) {
@@ -298,10 +340,15 @@ public class ViewGUI {
 			}
 
 			// Update label text
-			firstLabel.setText(summaryString);
-			secondLabel.setText(actionString);
-			labelPanel.add(secondLabel);
-
+			firstLabel.setText("Hit or Stand?");
+			
+			// Add text fields to card panels
+			playerCardPanel.add(playerTextTop, BorderLayout.NORTH);
+			playerCardPanel.add(playerTextBottom, BorderLayout.SOUTH);
+			dealerCardPanel.add(dealerTextTop, BorderLayout.NORTH);
+			dealerCardPanel.add(dealerTextBottom, BorderLayout.SOUTH);
+			
+			// Add card panels to main panel
 			mainPanel.add(playerCardPanel, BorderLayout.EAST);
 			mainPanel.add(dealerCardPanel, BorderLayout.WEST);
 
@@ -319,28 +366,67 @@ public class ViewGUI {
 		});
 	}
 	
-	public void updateCards(JPanel cardPanel, List<String> cardImagePaths) {
-		// Clear previous cards
-		cardPanel.removeAll();
-		
-		// Add new cards
-		for (String cardImagePath : cardImagePaths) {
-			// cardImagePath = "/cards/PNG-cards-1.3/2-Ccopy.png"; // For bug fixing
-			URL resourceURL = getClass().getResource(cardImagePath);
-			System.out.println(resourceURL);
-			if (resourceURL == null) {
-				System.out.println("Resource not found: " + cardImagePath);
-			} else {
-				System.out.println("Resource found: " + cardImagePath);
-				ImageIcon cardIcon = new ImageIcon(resourceURL);
-				JLabel cardLabel = new JLabel(cardIcon);
-				cardPanel.add(cardLabel);
+	public void updateCards(JPanel cardImagePanel, List<String> cardImagePaths) {
+		SwingUtilities.invokeLater(() -> {
+			// Clear previous cards
+			cardImagePanel.removeAll();
+
+			// Add new cards
+			for (String cardImagePath : cardImagePaths) {
+				URL resourceURL = getClass().getResource(cardImagePath);
+				if (resourceURL == null) {
+					System.out.println("Resource not found: " + cardImagePath);
+				} else {
+					// Load and scale the image
+					ImageIcon cardIcon = new ImageIcon(resourceURL);
+					Image scaledImage = cardIcon.getImage().getScaledInstance(cardWidth, cardHeight, Image.SCALE_SMOOTH);
+					ImageIcon scaledIcon = new ImageIcon(scaledImage);
+
+					// Add the scaled image to the label and the card image panel
+					JLabel cardLabel = new JLabel(scaledIcon);
+					cardImagePanel.add(cardLabel);
+				}
 			}
-		}
-		
-		// Refresh panel
-		cardPanel.revalidate();
-		cardPanel.repaint();
+
+			// Refresh panel
+			cardImagePanel.revalidate();
+			cardImagePanel.repaint();
+			
+		});
+	}
+	
+	public void updateSumText(JTextField textBottomField, String sumText) {
+		textBottomField.setText(sumText);
+		textBottomField.revalidate();
+		textBottomField.repaint();
+	}
+
+	public void endHand(String topText, boolean outOfMoney) {
+		SwingUtilities.invokeLater(() -> {
+			// Remove actionPanel if it exists
+			if (actionPanel != null) {
+				mainPanel.remove(actionPanel);
+			}
+
+			// Update label text
+			firstLabel.setText(topText);
+
+			if (outOfMoney) {
+				gameOverText.setAlignmentX(Component.CENTER_ALIGNMENT);
+				mainPanel.add(gameOverText, BorderLayout.SOUTH);
+			} else {
+				// Create new action panel with button
+				actionPanel = new JPanel(new FlowLayout());
+				actionPanel.add(playAgainButton);
+
+				// Add the action panel to the main panel
+				mainPanel.add(actionPanel, BorderLayout.SOUTH);
+			}
+
+			// Refresh the frame to display the updated components
+			mainPanel.revalidate();
+			mainPanel.repaint();
+		});
 	}
 
     // Getter methods for frame and buttons to allow Controller to add functionality
@@ -359,6 +445,10 @@ public class ViewGUI {
     public JButton getStartPlayingButton() {
         return startPlayingButton;
     }
+	
+	public JButton getPlayAgainButton() {
+		return playAgainButton;
+	}
 
     public JButton getViewRecordsButton() {
         return viewRecordsButton;
@@ -388,12 +478,28 @@ public class ViewGUI {
 		return standButton;
 	}
 	
-	public JPanel getPlayerCardPanel() {
-		return playerCardPanel;
+//	public JPanel getPlayerCardPanel() {
+//		return playerCardPanel;
+//	}
+//	
+//	public JPanel getDealerCardPanel() {
+//		return dealerCardPanel;
+//	}
+	
+	public JPanel getPlayerCardImagePanel() {
+		return playerCardImagePanel;
 	}
 	
-	public JPanel getDealerCardPanel() {
-		return dealerCardPanel;
+	public JPanel getDealerCardImagePanel() {
+		return dealerCardImagePanel;
+	}
+	
+	public JTextField getPlayerTextBottom() {
+		return playerTextBottom;
+	}
+	
+	public JTextField getDealerTextBottom() {
+		return dealerTextBottom;
 	}
 
 }

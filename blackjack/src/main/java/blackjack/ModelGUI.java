@@ -23,9 +23,11 @@ public class ModelGUI {
 	private GameLog gameLog;
 	private List<HandLog> hands;
 	private HandLog handLog; // Will continuously update every hand
-	private Gamestate gamestate; // Will continuously update every hand
 	private double bet;
-	// private BlackjackGUI blackjack; // Will continuously update every hand
+	private boolean playerNatural;
+	private boolean dealerNatural;
+	private Double payoutMultiplier; // Can be null
+	private String resultText;
 	
 	public ModelGUI() {
 		dealer = new Dealer();
@@ -95,9 +97,11 @@ public class ModelGUI {
 	}
 	
 	public void dealHand() {
+		// Increment player's number of hands played
+		player.incrementHandsPlayed();
+		
 		// Initialize new handLog and gamestate
 		handLog = new HandLog(gameLog.getTimestamp(), player.getBalance(), bet);
-		gamestate = new Gamestate();
 		
 		// Initialize new empty hands for player and dealer
 		player.addHand();
@@ -114,7 +118,46 @@ public class ModelGUI {
 		// Deal second cards
 		player.addCard(deck.dealCard());
 		dealer.setHiddenCard(deck.dealCard()); // Dealer's second card is hidden
+		
+		// Check for naturals
+		playerNatural = (player.getSum() == 21);
+		dealerNatural = (dealer.getSum() == 21);
+
+		// Cross check for naturals
+		if (playerNatural) {
+			if (dealerNatural) {
+				// Both player and dealer have naturals
+				resultText = "Both " + player.getName() + " and " + dealer.getName() + " have naturals, it is a tie!";
+				payoutMultiplier = 0.0;
+			} else {
+				// Only player has natural
+				resultText = player.getName() + " has a natural win!";
+				payoutMultiplier = 1.5;
+				player.updateHandsWon(payoutMultiplier);
+			}
+		} else if (dealerNatural) {
+			// Only dealer has natural
+			resultText = dealer.getName() + " has a natural win...";
+			payoutMultiplier = -1.0;
+		} else {
+			// No one has a natural
+			resultText = null;
+			payoutMultiplier = null;
+		}
 	}
+	
+	public void hit() {
+		// Deal new card to player
+		player.addCard(deck.dealCard());
+		
+		// Check if player is bust
+		if (player.isBust()) {
+			payoutMultiplier = -1.0;
+			player.adjustBalance(bet, payoutMultiplier);
+			resultText = "Bust... Your balance is now $" + player.getBalance() + ".";
+		}
+	}
+	
 	
 	public void endGame() {
 		// Write later
@@ -219,4 +262,11 @@ public class ModelGUI {
 		return bet;
 	}
 	
+	public Double getPayoutMultipler() {
+		return payoutMultiplier;
+	}
+	
+	public String getResultText() {
+		return resultText;
+	}
 }

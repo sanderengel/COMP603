@@ -40,6 +40,13 @@ public class ControllerGUI {
 				Logger.getLogger(ControllerGUI.class.getName()).log(Level.SEVERE, null, ex);
 			}
 		});
+		view.getPlayAgainButton().addActionListener((ActionEvent e) -> {
+			try {
+				handleStartPlaying();
+			} catch (SQLException ex) {
+				Logger.getLogger(ControllerGUI.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		});
 		view.getViewRecordsButton().addActionListener((ActionEvent e) -> {
 			handleViewRecords();
 		});
@@ -137,10 +144,18 @@ public class ControllerGUI {
 		model.dealHand();
 		
 		// Update view to show blackjack playing interface
-		view.updateHand("Here's a summary.", "Do something?");
+		view.updateHand();
 		
 		// Update cards
 		updateCards(true); // Update with hidden card
+		
+		// Check for natural win/loss
+		String resultText = model.getResultText();
+		if (resultText != null) {
+			// resultText has been filled already, must be natural
+			System.out.println(resultText);
+			endHand(resultText, (model.getPlayer().getBalance() <= 0));
+		}
 		
 	}
 	
@@ -170,16 +185,36 @@ public class ControllerGUI {
 		}
 			
 		// Update view
-		view.updateCards(view.getPlayerCardPanel(), playerCardImagePaths);
-		view.updateCards(view.getDealerCardPanel(), dealerCardImagePaths);
+		view.updateCards(view.getPlayerCardImagePanel(), playerCardImagePaths);
+		view.updateCards(view.getDealerCardImagePanel(), dealerCardImagePaths);
+		view.updateSumText(view.getPlayerTextBottom(), "Sum of cards: " + model.getPlayer().getSum());
+		if (hiddenCard) {
+			int dealerFirstCardValue = model.getDealer().getHand().getCards().get(0).getValue();
+			view.updateSumText(view.getDealerTextBottom(), "Value of visible card: " + dealerFirstCardValue);
+		} else {
+			view.updateSumText(view.getPlayerTextBottom(), "Sum of cards: " + model.getPlayer().getSum());
+		}
+		
 	}
 	
 	private void handleHit() {
-		// Write method
+		model.hit();
+		
+		// Update cards
+		updateCards(true);
+		
+		// Check if player is bust
+		if (model.getPlayer().isBust()) {
+			endHand(model.getResultText(), (model.getPlayer().getBalance() > 0));
+		}
 	}
 	
 	private void handleStand() {
 		// Write method
+	}
+	
+	private void endHand(String topText, boolean outOfMoney) {
+		view.endHand(topText, outOfMoney);
 	}
 	
 	// Save information to logs and DB and close program
