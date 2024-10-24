@@ -23,6 +23,10 @@ public class ViewGUI {
         // Create the frame
         frame = new JFrame("Blackjack Game");
         frame.setSize(600, 300);
+        
+        // Center the frame on the screen
+        frame.setLocationRelativeTo(null);
+
 
 		// Create main panel with BorderLayout
         mainPanel = new JPanel(new BorderLayout());
