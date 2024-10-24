@@ -64,6 +64,8 @@ public class ControllerGUI {
 				handleBet();
 			} catch (SQLException ex) {
 				Logger.getLogger(ControllerGUI.class.getName()).log(Level.SEVERE, null, ex);
+			} catch (InterruptedException ex) {
+				Logger.getLogger(ControllerGUI.class.getName()).log(Level.SEVERE, null, ex);
 			}
 		});
 		view.getHitButton().addActionListener((ActionEvent e) -> {
@@ -132,7 +134,7 @@ public class ControllerGUI {
 		view.updateGetBet();
 	}
 	
-	private void handleBet() throws SQLException {
+	private void handleBet() throws SQLException, InterruptedException {
 		double betAmount = 0.0;
 		
 		// Get bet from the input field
@@ -165,7 +167,7 @@ public class ControllerGUI {
 		view.updateInvalidBet(errorMessage);
 	}
 	
-	private void playHand(double bet) throws SQLException {
+	private void playHand(double bet) throws SQLException, InterruptedException {
 		
 		// Set bet and start hand in model
 		model.startHand(bet);
@@ -178,6 +180,10 @@ public class ControllerGUI {
 		
 		// Check for natural win/loss
 		if (model.checkNaturals()) {
+			// Show all cards if dealer has natural
+			if (model.getDealer().hasNatural()) {
+				updateCards(false);
+			}
 			endHand();
 		}
 		
