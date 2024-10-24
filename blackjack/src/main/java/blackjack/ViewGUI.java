@@ -137,7 +137,7 @@ public class ViewGUI {
     }
 
     // Method to update the panel for new/returning players
-    public void updatePlayerStatus(String firstLabelText, String secondLabelText, boolean isNewPlayer) {
+    public void updatePlayerStatus(String firstLabelText, String secondLabelText, boolean isNewPlayer, boolean outOfMoney) {
         // Remove inputPanel after player enters their name
 		mainPanel.remove(nameInputPanel);
 
@@ -154,8 +154,10 @@ public class ViewGUI {
 			actionPanel.add(viewHandsButton);
         }
 		
-		// Add "Start Playing" button for both new and returning players
-        actionPanel.add(startPlayingButton);
+		// Add "Start Playing" button for both new and returning players if they have money
+		if (!outOfMoney) {
+			actionPanel.add(startPlayingButton);
+		}
 
         // Add the action panel below the introPanel
         mainPanel.add(actionPanel, BorderLayout.SOUTH);
@@ -166,7 +168,7 @@ public class ViewGUI {
     }
 	
 	// Method to update the panel to show records for player
-	public void updateViewRecords(String RecordsString) {
+	public void updateViewRecords(String RecordsString, boolean outOfMoney) {
 		SwingUtilities.invokeLater(() -> {
 			// Remove actionPanel if it exists
 			if (actionPanel != null) {
@@ -189,7 +191,10 @@ public class ViewGUI {
 			actionPanel = new JPanel(new FlowLayout());
 			actionPanel.add(viewGamesButton);
 			actionPanel.add(viewHandsButton);
-			actionPanel.add(startPlayingButton);
+			// Add "Start Playing" button if player has money
+			if (!outOfMoney) {
+				actionPanel.add(startPlayingButton);
+			}
 
 			// Add the action panel to the main panel
 			mainPanel.add(actionPanel, BorderLayout.SOUTH);
@@ -201,7 +206,7 @@ public class ViewGUI {
 	}
 
 	// Method to update the panel to show played games
-	public void updateViewGames(String GamesString) {
+	public void updateViewGames(String GamesString, boolean outOfMoney) {
 		SwingUtilities.invokeLater(() -> {
 			// Remove actionPanel if it exists
 			if (actionPanel != null) {
@@ -224,7 +229,10 @@ public class ViewGUI {
 			actionPanel = new JPanel(new FlowLayout());
 			actionPanel.add(viewRecordsButton);
 			actionPanel.add(viewHandsButton);
-			actionPanel.add(startPlayingButton);
+			// Add "Start Playing" button if player has money
+			if (!outOfMoney) {
+				actionPanel.add(startPlayingButton);
+			}
 
 			// Add the action panel to the main panel
 			mainPanel.add(actionPanel, BorderLayout.SOUTH);
@@ -236,7 +244,7 @@ public class ViewGUI {
 	}
 
 	// Method to update the panel to show played hands
-	public void updateViewHands(String HandsString) {
+	public void updateViewHands(String HandsString, boolean outOfMoney) {
 		SwingUtilities.invokeLater(() -> {
 			// Remove actionPanel if it exists
 			if (actionPanel != null) {
@@ -259,7 +267,10 @@ public class ViewGUI {
 			actionPanel = new JPanel(new FlowLayout());
 			actionPanel.add(viewRecordsButton);
 			actionPanel.add(viewGamesButton);
-			actionPanel.add(startPlayingButton);
+			// Add "Start Playing" button if player has money
+			if (!outOfMoney) {
+				actionPanel.add(startPlayingButton);
+			}
 
 			// Add the action panel to the main panel
 			mainPanel.add(actionPanel, BorderLayout.SOUTH);
@@ -356,6 +367,10 @@ public class ViewGUI {
 			// Update label text
 			firstLabel.setText("Stood. Dealer's turn...");
 			secondLabel.setText("");
+			
+			// Add empty action panel for spacing
+			actionPanel = new JPanel(new FlowLayout());
+			mainPanel.add(actionPanel, BorderLayout.SOUTH);
 
 			// Refresh the frame to display the updated components
 			mainPanel.revalidate();

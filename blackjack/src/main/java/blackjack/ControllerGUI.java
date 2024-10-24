@@ -103,20 +103,20 @@ public class ControllerGUI {
         }
 		
 		// Update GUI
-		view.updatePlayerStatus(firstLabelText, secondLabelText, model.isNewPlayer());
+		view.updatePlayerStatus(firstLabelText, secondLabelText, model.isNewPlayer(), model.getPlayer().outOfMoney());
 		
     }
 	
 	private void handleViewRecords() {
-		view.updateViewRecords(model.getPlayerStatistics());
+		view.updateViewRecords(model.getPlayerStatistics(), model.getPlayer().outOfMoney());
 	}
 	
 	private void handleViewGames() {
-		view.updateViewGames(model.getGameStatistics());
+		view.updateViewGames(model.getGameStatistics(), model.getPlayer().outOfMoney());
 	}
 	
 	private void handleViewHands() {
-		view.updateViewHands(model.getHandStatistics());
+		view.updateViewHands(model.getHandStatistics(), model.getPlayer().outOfMoney());
 	}
 	
 	private void handleStartPlaying() throws SQLException {
